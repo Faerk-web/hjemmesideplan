@@ -21,8 +21,6 @@
     --sponsor-bg: #E6F1FB; --sponsor-text: #0C447C;
     --fan-bg: #EAF3DE; --fan-text: #27500A;
     --vol-bg: #FAEEDA; --vol-text: #633806;
-    --now-bg: #FCEBEB; --now-text: #A32D2D;
-    --soon-bg: #FFF3E0; --soon-text: #854F0B;
     --ongoing-bg: #E6F1FB; --ongoing-text: #185FA5;
     --done-bg: #f0f0f0; --done-text: #888;
     --low-bg: #EAF3DE; --low-text: #3B6D11;
@@ -162,7 +160,7 @@
     padding: 2rem;
     border-radius: var(--radius);
     width: 90%;
-    max-width: 800px;
+    max-width: 900px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
   }
   .timeline-header {
@@ -263,8 +261,6 @@
     margin-top: 0.5rem;
     text-transform: uppercase;
   }
-  .timeline-badge.now { background: var(--now-bg); color: var(--now-text); }
-  .timeline-badge.soon { background: var(--soon-bg); color: var(--soon-text); }
   .timeline-badge.ongoing { background: var(--ongoing-bg); color: var(--ongoing-text); }
 
   /* MODAL */
@@ -356,6 +352,49 @@
   }
   .form-checkbox input { cursor: pointer; }
   .form-checkbox label { cursor: pointer; font-size: 13px; }
+
+  /* TIMEFRAME SELECTOR */
+  .timeframe-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .timeframe-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+  .timeframe-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .timeframe-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .timeframe-input-group label {
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .timeframe-input-group input {
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    background: white;
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .timeframe-input-group input:focus { border-color: var(--gold); }
 
   .modal-actions {
     display: flex;
@@ -637,8 +676,6 @@
     letter-spacing: 0.5px;
     text-transform: uppercase;
   }
-  .pri-now { background: var(--now-bg); color: var(--now-text); }
-  .pri-soon { background: var(--soon-bg); color: var(--soon-text); }
   .pri-ongoing { background: var(--ongoing-bg); color: var(--ongoing-text); }
   .pri-done { background: var(--done-bg); color: var(--done-text); }
   .chevron {
@@ -726,7 +763,7 @@
   .action-btn:hover { background: var(--bg); border-color: var(--gold); color: var(--gold); }
   .action-btn.done-btn:hover { background: #EAF3DE; border-color: #27500A; color: #27500A; }
   .action-btn.edit-btn:hover { background: #E6F1FB; border-color: #0C447C; color: #0C447C; }
-  .action-btn.reset-btn:hover { background: var(--now-bg); border-color: var(--now-text); color: var(--now-text); }
+  .action-btn.reset-btn:hover { background: var(--ongoing-bg); border-color: var(--ongoing-text); color: var(--ongoing-text); }
 
   /* EXPANDED BODY */
   .card-body {
@@ -897,7 +934,7 @@
       <div class="header-sub">Sponsor-tiltrækning · Fan engagement · Frivilligrekruttering</div>
     </div>
     <div class="header-actions">
-      <button class="btn-reset" onclick="openTimeline()">📅 Timeline</button>
+      <button class="btn-reset" onclick="openTimeline()">📅 Tidslinje</button>
       <button class="btn-reset" onclick="openNewModal()">+ Ny anbefaling</button>
       <div class="view-toggle">
         <button class="view-btn active" id="cardViewBtn" onclick="switchToCardView()">🃏 Kort</button>
@@ -913,9 +950,9 @@
       <div class="dash-sub">anbefalinger</div>
     </div>
     <div class="dash-card">
-      <div class="dash-label">Prioritet Nu</div>
-      <div class="dash-value" id="d-now">—</div>
-      <div class="dash-sub">implementér nu</div>
+      <div class="dash-label">Igangværende</div>
+      <div class="dash-value" id="d-ongoing">—</div>
+      <div class="dash-sub">projekter</div>
     </div>
     <div class="dash-card">
       <div class="dash-label">Min. budget</div>
@@ -938,12 +975,11 @@
       <button class="fbtn" data-aud="frivillig">Frivillig</button>
     </div>
     <div class="filter-sep"></div>
-    <span class="filter-label">Prioritet</span>
+    <span class="filter-label">Status</span>
     <div class="filter-group" id="pri-filters">
       <button class="fbtn active" data-pri="all">Alle</button>
-      <button class="fbtn" data-pri="now">Nu</button>
-      <button class="fbtn" data-pri="soon">Snart</button>
-      <button class="fbtn" data-pri="ongoing">Løbende</button>
+      <button class="fbtn" data-pri="ongoing">Igangværende</button>
+      <button class="fbtn" data-pri="done">Afsluttet</button>
     </div>
   </div>
 
@@ -953,14 +989,14 @@
       <option value="default">Standard (#)</option>
       <option value="roi">ROI-indeks (høj → lav)</option>
       <option value="cost">Estimeret pris (lav → høj)</option>
-      <option value="priority">Prioritet (Nu → Løbende)</option>
+      <option value="weeks">Uger (få → mange)</option>
     </select>
   </div>
 
   <div id="timelineModal" class="timeline-modal">
     <div class="timeline-content">
       <div class="timeline-header">
-        <h2>📅 Implementeringsplan til 2030</h2>
+        <h2>📅 Implementeringstidslinje</h2>
         <button class="timeline-close" onclick="closeTimeline()">×</button>
       </div>
       <div class="timeline-track">
@@ -998,499 +1034,526 @@
             </div>
           </div>
         </div>
-        <div class="form-field">
-          <label class="form-label">Prioritet</label>
-          <select class="form-select" id="newPriority">
-            <option value="now">Nu</option>
-            <option value="soon">Snart</option>
-            <option value="ongoing">Løbende</option>
-          </select>
+        <div class="form-field full">
+          <label class="form-label">Kort beskrivelse</label>
+          <input class="form-input" id="newShortDesc" placeholder="En linje beskrivelse" type="text">
+        </div>
+        <div class="form-field full">
+          <label class="form-label">Detaljer</label>
+          <textarea class="form-textarea" id="newDetails" placeholder="Fuldstændig beskrivelse..."></textarea>
         </div>
         <div class="form-field">
-          <label class="form-label">Kompleksitet</label>
-          <select class="form-select" id="newComplexity">
-            <option value="low">Lav</option>
+          <label class="form-label">Påvirkning</label>
+          <input class="form-input" id="newImpact" placeholder="Eksempel: Højere engagement" type="text">
+        </div>
+        <div class="form-field">
+          <label class="form-label">ROI (0-10)</label>
+          <input class="form-input" id="newROI" placeholder="7" type="number" min="0" max="10">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Estimeret pris (DKK)</label>
+          <input class="form-input" id="newCost" placeholder="5000" type="number" min="0">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Implementeringsvanskelighed</label>
+          <select class="form-select" id="newImpl">
+            <option value="low">Lavt</option>
             <option value="mid">Middel</option>
           </select>
         </div>
+
+        <!-- TIMEFRAME SECTION -->
         <div class="form-field full">
-          <label class="form-label">Estimeret pris</label>
-          <input class="form-input" id="newCost" placeholder="Eksempel: 0–3.000 kr." type="text">
-        </div>
-        <div class="form-field full">
-          <label class="form-label">ROI-indeks</label>
-          <div style="display: flex; gap: 10px; align-items: center;">
-            <input type="range" class="roi-slider" id="newROI" min="1" max="10" step="0.5" value="5" oninput="document.getElementById('newROIVal').textContent=this.value+'/10'">
-            <span class="roi-slider-val" id="newROIVal">5/10</span>
+          <div class="timeframe-section">
+            <label class="timeframe-label">⏱️ Tidshorisont</label>
+            <div class="timeframe-inputs">
+              <div class="timeframe-input-group">
+                <label for="newWeeks">Uger</label>
+                <input type="number" id="newWeeks" placeholder="f.eks. 4" min="0">
+              </div>
+              <div class="timeframe-input-group">
+                <label for="newMonths">Måneder</label>
+                <input type="number" id="newMonths" placeholder="f.eks. 2" min="0">
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="form-field full">
-          <label class="form-label">Kort beskrivelse</label>
-          <textarea class="form-textarea" id="newShortDesc" placeholder="Skaber øjeblikkelig troværdighed..."></textarea>
-        </div>
-        <div class="form-field full">
-          <label class="form-label">Detaljeret tekst</label>
-          <textarea class="form-textarea" id="newDetail" placeholder="En synlig stat-bar øverst på forsiden..."></textarea>
-        </div>
-        <div class="form-field full">
-          <label class="form-label">Forventet effekt</label>
-          <textarea class="form-textarea" id="newImpact" placeholder="Øget tillid fra første sekund..."></textarea>
         </div>
       </div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeNewModal()">Annuller</button>
-        <button class="btn-save" onclick="saveNewRecommendation()">Opret anbefaling</button>
+        <button class="btn-save" onclick="saveNewRecommendation()">Gem anbefaling</button>
       </div>
     </div>
   </div>
 </header>
 
 <div class="main">
-  <div class="section-title" id="active-label">Aktive anbefalinger</div>
-  <div class="cards-grid" id="cards-container"></div>
-
-  <div class="table-view-container" id="table-view-container">
-    <table class="data-table" id="data-table">
+  <div class="cards-view-container" id="cardsViewContainer">
+    <div class="section-title" id="activeTitle">✨ Aktive anbefalinger</div>
+    <div class="cards-grid" id="cardsGrid"></div>
+  </div>
+  <div class="table-view-container" id="tableViewContainer">
+    <table class="data-table" id="dataTable">
       <thead>
         <tr>
           <th>#</th>
           <th>Titel</th>
           <th>Målgruppe</th>
-          <th>Prioritet</th>
-          <th>Kompleksitet</th>
-          <th>Pris</th>
+          <th>Status</th>
           <th>ROI</th>
+          <th>Pris</th>
+          <th>Uger</th>
+          <th>Handlinger</th>
         </tr>
       </thead>
-      <tbody id="table-body"></tbody>
+      <tbody id="tableBody"></tbody>
     </table>
-  </div>
-
-  <div class="done-section" id="done-section" style="display:none">
-    <div class="section-title">Afsluttede</div>
-    <div class="cards-grid" id="done-container"></div>
   </div>
 </div>
 
 <footer>
-  <strong>Kompleksitet:</strong> Lav = under 1 dag &nbsp;·&nbsp; Middel = 1–3 dage, ekstern hjælp kan være nødvendig<br>
-  <strong>Prioritet:</strong> Nu = implementér denne måned &nbsp;·&nbsp; Snart = 30–60 dage &nbsp;·&nbsp; Løbende = kræver løbende drift<br>
-  <span style="opacity:0.4">Prosliding.dk · Team Vestergaard Johansen · Vej mod OL</span>
+  <strong>Prosliding.dk</strong> · Anbefalede forbedringer til sponsortiltrækning, fan engagement og frivilligrekruttering
 </footer>
 
 <script>
-// ====================== VIEW MODE MANAGEMENT ======================
-function switchToCardView() {
-  document.getElementById('cards-container').style.display = 'grid';
-  document.getElementById('table-view-container').classList.remove('active');
-  document.getElementById('cardViewBtn').classList.add('active');
-  document.getElementById('tableViewBtn').classList.remove('active');
-  localStorage.setItem('viewMode', 'card');
+// ===== DATA STRUCTURE & STORAGE =====
+let recommendations = JSON.parse(localStorage.getItem('recommendations')) || [];
+let currentFilters = { audience: 'all', priority: 'all' };
+let currentSort = 'default';
+let nextId = recommendations.length > 0 ? Math.max(...recommendations.map(r => r.id)) + 1 : 1;
+
+// ===== MODAL FUNCTIONS =====
+function openNewModal() {
+  document.getElementById('newRecommendationModal').style.display = 'block';
+  clearNewForm();
+}
+
+function closeNewModal() {
+  document.getElementById('newRecommendationModal').style.display = 'none';
+}
+
+function clearNewForm() {
+  document.getElementById('newTitle').value = '';
+  document.getElementById('newShortDesc').value = '';
+  document.getElementById('newDetails').value = '';
+  document.getElementById('newImpact').value = '';
+  document.getElementById('newROI').value = '7';
+  document.getElementById('newCost').value = '';
+  document.getElementById('newImpl').value = 'low';
+  document.getElementById('newWeeks').value = '';
+  document.getElementById('newMonths').value = '';
+  document.querySelectorAll('.form-checkbox input').forEach(cb => cb.checked = false);
+}
+
+function saveNewRecommendation() {
+  const title = document.getElementById('newTitle').value.trim();
+  const shortDesc = document.getElementById('newShortDesc').value.trim();
+  const details = document.getElementById('newDetails').value.trim();
+  const impact = document.getElementById('newImpact').value.trim();
+  const roi = parseInt(document.getElementById('newROI').value) || 0;
+  const cost = parseInt(document.getElementById('newCost').value) || 0;
+  const impl = document.getElementById('newImpl').value;
+  const weeks = parseInt(document.getElementById('newWeeks').value) || 0;
+  const months = parseInt(document.getElementById('newMonths').value) || 0;
+
+  if (!title) {
+    alert('Tilføj en titel!');
+    return;
+  }
+
+  if (weeks === 0 && months === 0) {
+    alert('Angiv mindst uger eller måneder for tidshorisont!');
+    return;
+  }
+
+  const audiences = [];
+  if (document.getElementById('newAudSponsor').checked) audiences.push('sponsor');
+  if (document.getElementById('newAudFan').checked) audiences.push('fan');
+  if (document.getElementById('newAudFrivillig').checked) audiences.push('frivillig');
+
+  const newRec = {
+    id: nextId++,
+    title,
+    shortDesc,
+    details,
+    impact,
+    roi: Math.min(10, Math.max(0, roi)),
+    cost,
+    impl,
+    audiences: audiences.length > 0 ? audiences : ['all'],
+    status: 'ongoing',
+    weeks,
+    months,
+    createdAt: new Date().toISOString()
+  };
+
+  recommendations.push(newRec);
+  saveData();
+  renderCards();
+  closeNewModal();
+}
+
+function saveData() {
+  localStorage.setItem('recommendations', JSON.stringify(recommendations));
+}
+
+// ===== FILTERING & SORTING =====
+function applyFilters() {
+  const audFilters = document.querySelectorAll('#aud-filters .fbtn');
+  const priFilters = document.querySelectorAll('#pri-filters .fbtn');
+
+  audFilters.forEach(btn => {
+    btn.addEventListener('click', function() {
+      audFilters.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      currentFilters.audience = this.dataset.aud;
+      renderCards();
+    });
+  });
+
+  priFilters.forEach(btn => {
+    btn.addEventListener('click', function() {
+      priFilters.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      currentFilters.priority = this.dataset.pri;
+      renderCards();
+    });
+  });
+}
+
+function getFilteredRecommendations() {
+  let filtered = recommendations;
+
+  // Audience filter
+  if (currentFilters.audience !== 'all') {
+    filtered = filtered.filter(r => r.audiences.includes(currentFilters.audience) || r.audiences.includes('all'));
+  }
+
+  // Priority filter (status)
+  if (currentFilters.priority !== 'all') {
+    filtered = filtered.filter(r => r.status === currentFilters.priority);
+  }
+
+  return filtered;
+}
+
+function getSortedRecommendations(recs) {
+  const sorted = [...recs];
+
+  switch(currentSort) {
+    case 'roi':
+      sorted.sort((a, b) => b.roi - a.roi);
+      break;
+    case 'cost':
+      sorted.sort((a, b) => a.cost - b.cost);
+      break;
+    case 'weeks':
+      sorted.sort((a, b) => {
+        const weekA = a.weeks + (a.months * 4.33);
+        const weekB = b.weeks + (b.months * 4.33);
+        return weekA - weekB;
+      });
+      break;
+    default:
+      sorted.sort((a, b) => a.id - b.id);
+  }
+
+  return sorted;
+}
+
+// ===== CARD RENDERING =====
+function renderCards() {
+  const filtered = getFilteredRecommendations();
+  const sorted = getSortedRecommendations(filtered);
+
+  const cardsGrid = document.getElementById('cardsGrid');
+  cardsGrid.innerHTML = '';
+
+  if (sorted.length === 0) {
+    cardsGrid.innerHTML = '<div class="empty-state">Ingen anbefalinger matcher dine filtre.</div>';
+    updateDashboard([]);
+    return;
+  }
+
+  sorted.forEach(rec => {
+    const card = createCardElement(rec);
+    cardsGrid.appendChild(card);
+  });
+
+  updateDashboard(sorted);
+  updateTable(sorted);
+}
+
+function createCardElement(rec) {
+  const card = document.createElement('div');
+  card.className = `card ${rec.status === 'done' ? 'done' : ''}`;
+  card.dataset.id = rec.id;
+
+  const totalWeeks = rec.weeks + (rec.months * 4.33);
+  const timeframeText = rec.months > 0 && rec.weeks > 0 
+    ? `${rec.months}m ${rec.weeks}u`
+    : rec.months > 0 
+    ? `${rec.months} måned${rec.months !== 1 ? 'er' : ''}`
+    : `${rec.weeks} uge${rec.weeks !== 1 ? 'r' : ''}`;
+
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleExpand(${rec.id})">
+      <div class="card-num">${rec.id}</div>
+      <div class="card-header-content">
+        <div class="card-title">${rec.title}</div>
+        <div class="card-tags">
+          ${rec.audiences.map(aud => {
+            if (aud === 'all') return '';
+            const tagClass = aud === 'sponsor' ? 'tag-sponsor' : aud === 'fan' ? 'tag-fan' : 'tag-vol';
+            const label = aud === 'sponsor' ? 'Sponsor' : aud === 'fan' ? 'Fan' : 'Frivillig';
+            return `<span class="tag ${tagClass}">${label}</span>`;
+          }).join('')}
+        </div>
+      </div>
+      <div class="card-header-right">
+        <span class="pri-badge pri-${rec.status}">${rec.status === 'ongoing' ? 'Igangværende' : 'Afsluttet'}</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+
+    <div class="card-roi">
+      <span class="roi-label-txt">ROI</span>
+      <div class="roi-track">
+        <div class="roi-fill" style="width: ${rec.roi * 10}%"></div>
+      </div>
+      <span class="roi-score">${rec.roi}</span>
+    </div>
+
+    <div class="card-footer-meta">
+      <div>
+        <span class="cost-txt">💰 <span>${rec.cost.toLocaleString('da-DK')} DKK</span></span>
+        <span class="impl-badge impl-${rec.impl}" style="margin-left: 0.5rem;">${rec.impl === 'low' ? 'Lavt' : 'Middel'}</span>
+        <span class="impl-badge ongoing" style="margin-left: 0.5rem;">⏱️ ${timeframeText}</span>
+      </div>
+      <div class="card-actions">
+        <button class="action-btn edit-btn" onclick="toggleEditMode(event, ${rec.id})" title="Rediger">✎</button>
+        <button class="action-btn reset-btn" onclick="cycleStatus(event, ${rec.id})" title="Skift status">🔄</button>
+        <button class="action-btn done-btn" onclick="deleteRecommendation(event, ${rec.id})" title="Slet">🗑️</button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="short-desc">${rec.shortDesc}</div>
+      <div class="view-section">
+        <div class="detail-text">${rec.details}</div>
+        <div class="impact-block">
+          <div class="impact-label">💡 Påvirkning</div>
+          ${rec.impact}
+        </div>
+      </div>
+      <div class="edit-section">
+        <div class="edit-grid">
+          <div class="edit-field full">
+            <label class="edit-label">Titel</label>
+            <input class="edit-input" value="${rec.title}" data-field="title">
+          </div>
+          <div class="edit-field full">
+            <label class="edit-label">Kort beskrivelse</label>
+            <input class="edit-input" value="${rec.shortDesc}" data-field="shortDesc">
+          </div>
+          <div class="edit-field full">
+            <label class="edit-label">Detaljer</label>
+            <textarea class="edit-textarea" data-field="details">${rec.details}</textarea>
+          </div>
+          <div class="edit-field full">
+            <label class="edit-label">Påvirkning</label>
+            <input class="edit-input" value="${rec.impact}" data-field="impact">
+          </div>
+          <div class="edit-field">
+            <label class="edit-label">ROI (0-10)</label>
+            <div class="roi-slider-wrap">
+              <input class="roi-slider" type="range" min="0" max="10" value="${rec.roi}" data-field="roi">
+              <span class="roi-slider-val">${rec.roi}</span>
+            </div>
+          </div>
+          <div class="edit-field">
+            <label class="edit-label">Pris (DKK)</label>
+            <input class="edit-input" type="number" value="${rec.cost}" data-field="cost">
+          </div>
+          <div class="edit-field">
+            <label class="edit-label">Vanskelighed</label>
+            <select class="edit-select" data-field="impl">
+              <option value="low" ${rec.impl === 'low' ? 'selected' : ''}>Lavt</option>
+              <option value="mid" ${rec.impl === 'mid' ? 'selected' : ''}>Middel</option>
+            </select>
+          </div>
+          <div class="edit-field">
+            <label class="edit-label">Uger</label>
+            <input class="edit-input" type="number" value="${rec.weeks}" data-field="weeks">
+          </div>
+          <div class="edit-field">
+            <label class="edit-label">Måneder</label>
+            <input class="edit-input" type="number" value="${rec.months}" data-field="months">
+          </div>
+        </div>
+        <button class="edit-save-btn" onclick="saveEditedRecommendation(${rec.id})">Gem ændringer</button>
+      </div>
+    </div>
+  `;
+
+  // Event listener for ROI slider
+  const roiSlider = card.querySelector('.roi-slider');
+  if (roiSlider) {
+    roiSlider.addEventListener('input', function() {
+      card.querySelector('.roi-slider-val').textContent = this.value;
+    });
+  }
+
+  return card;
+}
+
+function toggleExpand(id) {
+  const card = document.querySelector(`[data-id="${id}"]`);
+  card.classList.toggle('expanded');
+}
+
+function toggleEditMode(event, id) {
+  event.stopPropagation();
+  const card = document.querySelector(`[data-id="${id}"]`);
+  card.classList.toggle('edit-mode');
+}
+
+function saveEditedRecommendation(id) {
+  const card = document.querySelector(`[data-id="${id}"]`);
+  const rec = recommendations.find(r => r.id === id);
+
+  const fields = card.querySelectorAll('[data-field]');
+  fields.forEach(field => {
+    const fieldName = field.dataset.field;
+    let value = field.value;
+
+    if (fieldName === 'roi' || fieldName === 'cost' || fieldName === 'weeks' || fieldName === 'months') {
+      value = parseInt(value) || 0;
+    }
+
+    rec[fieldName] = value;
+  });
+
+  saveData();
   renderCards();
 }
 
-function switchToTableView() {
-  document.getElementById('cards-container').style.display = 'none';
-  document.getElementById('table-view-container').classList.add('active');
-  document.getElementById('cardViewBtn').classList.remove('active');
-  document.getElementById('tableViewBtn').classList.add('active');
-  localStorage.setItem('viewMode', 'table');
-  renderTableView();
+function cycleStatus(event, id) {
+  event.stopPropagation();
+  const rec = recommendations.find(r => r.id === id);
+  rec.status = rec.status === 'ongoing' ? 'done' : 'ongoing';
+  saveData();
+  renderCards();
 }
 
-function loadViewPreference() {
-  const savedView = localStorage.getItem('viewMode') || 'card';
-  if (savedView === 'table') {
-    switchToTableView();
-  } else {
-    switchToCardView();
+function deleteRecommendation(event, id) {
+  event.stopPropagation();
+  if (confirm('Er du sikker på, at du vil slette denne anbefaling?')) {
+    recommendations = recommendations.filter(r => r.id !== id);
+    saveData();
+    renderCards();
   }
 }
 
-function renderTableView() {
-  const tbody = document.getElementById('table-body');
+// ===== DASHBOARD =====
+function updateDashboard(sorted) {
+  const active = sorted.length;
+  const ongoing = sorted.filter(r => r.status === 'ongoing').length;
+  const totalCost = sorted.reduce((sum, r) => sum + r.cost, 0);
+  const avgROI = sorted.length > 0 ? (sorted.reduce((sum, r) => sum + r.roi, 0) / sorted.length).toFixed(1) : 0;
+
+  document.getElementById('d-active').textContent = active;
+  document.getElementById('d-ongoing').textContent = ongoing;
+  document.getElementById('d-cost').textContent = totalCost > 0 ? totalCost.toLocaleString('da-DK') : '0';
+  document.getElementById('d-roi').textContent = avgROI;
+}
+
+// ===== TABLE VIEW =====
+function updateTable(sorted) {
+  const tbody = document.getElementById('tableBody');
   tbody.innerHTML = '';
-  
-  const allCards = document.querySelectorAll('#cards-container .card:not(.hidden-card)');
-  
-  allCards.forEach(card => {
-    const isActive = !card.classList.contains('done');
-    const num = card.querySelector('.card-num')?.textContent || '';
-    const title = card.querySelector('.card-title')?.textContent || '';
-    const tagsElements = card.querySelectorAll('.tag');
-    const tags = Array.from(tagsElements).map(t => t.textContent).join(', ') || '-';
-    const priorityEl = card.querySelector('[class*="pri-"]');
-    const priority = priorityEl?.textContent || '-';
-    const complexityEl = card.querySelector('[class*="impl-"]');
-    const complexity = complexityEl?.textContent || '-';
-    const costEl = card.querySelector('.cost-txt span');
-    const cost = costEl?.textContent || '-';
-    const roiEl = card.querySelector('.roi-score');
-    const roi = roiEl?.textContent || '-';
-    
+
+  sorted.forEach(rec => {
+    const totalWeeks = rec.weeks + (rec.months * 4.33);
+    const timeframeText = rec.months > 0 && rec.weeks > 0 
+      ? `${rec.months}m ${rec.weeks}u`
+      : rec.months > 0 
+      ? `${rec.months} md.`
+      : `${rec.weeks} uge${rec.weeks !== 1 ? 'r' : ''}`;
+
     const row = document.createElement('tr');
-    if (!isActive) row.classList.add('done');
+    row.className = rec.status === 'done' ? 'done' : '';
     row.innerHTML = `
-      <td>${num}</td>
-      <td>${title}</td>
-      <td>${tags}</td>
-      <td>${priority}</td>
-      <td>${complexity}</td>
-      <td>${cost}</td>
-      <td>${roi}</td>
+      <td>${rec.id}</td>
+      <td>${rec.title}</td>
+      <td>${rec.audiences.filter(a => a !== 'all').map(a => a.charAt(0).toUpperCase() + a.slice(1)).join(', ') || 'Alle'}</td>
+      <td>${rec.status === 'ongoing' ? 'Igangværende' : 'Afsluttet'}</td>
+      <td>${rec.roi}</td>
+      <td>${rec.cost.toLocaleString('da-DK')} DKK</td>
+      <td>${totalWeeks.toFixed(1)}</td>
+      <td style="text-align: center;">
+        <button class="action-btn edit-btn" onclick="toggleEditMode(event, ${rec.id})" title="Rediger">✎</button>
+        <button class="action-btn reset-btn" onclick="cycleStatus(event, ${rec.id})" title="Skift status">🔄</button>
+        <button class="action-btn done-btn" onclick="deleteRecommendation(event, ${rec.id})" title="Slet">🗑️</button>
+      </td>
     `;
     tbody.appendChild(row);
   });
 }
 
-// ====================== DATA WITH 10 RECOMMENDATIONS ======================
-const ORIGINAL_DATA = [
-  {
-    id: 1,
-    num: 1,
-    title: 'Live resultattavle',
-    aud: ['sponsor', 'fan'],
-    pri: 'now',
-    impl: 'low',
-    cost: '2.500 kr.',
-    roi: 9,
-    shortDesc: 'Skaber øjeblikkelig troværdighed',
-    detail: 'En synlig resultattavle øverst på siden med live opdateringer af kampen. Dette vil øge brugerengagement og kan være en stærk sponsor-aktivering.',
-    impact: 'Øget engagement, højere vertikal scrollydelse, bedre sponsor-værdi'
-  },
-  {
-    id: 2,
-    num: 2,
-    title: 'VIP-zone med eksklusivt indhold',
-    aud: ['sponsor'],
-    pri: 'soon',
-    impl: 'mid',
-    cost: '5.000 kr.',
-    roi: 7,
-    shortDesc: 'Premium opplevelse for sponsorer',
-    detail: 'Eksklusivt område for sponsorer med bag-kulisser-indhold og live updates fra holdet. Kan være a/b-testet.',
-    impact: 'Stærk sponsor-differentiering, øget loyalitet'
-  },
-  {
-    id: 3,
-    num: 3,
-    title: 'Frivillig-priser og belønninger',
-    aud: ['frivillig'],
-    pri: 'soon',
-    impl: 'mid',
-    cost: '3.000 kr.',
-    roi: 6,
-    shortDesc: 'Øg frivillig-engagement med gamification',
-    detail: 'Pointsystem for frivillige med tangible rewards. Kan være en app-feature eller web-baseret.',
-    impact: 'Øget frivillig-retentionrate, bedre kulturel binding'
-  },
-  {
-    id: 4,
-    num: 4,
-    title: 'Social media integration med live feed',
-    aud: ['fan', 'sponsor'],
-    pri: 'now',
-    impl: 'low',
-    cost: '1.500 kr.',
-    roi: 8,
-    shortDesc: 'Øget viralitet og engagement gennem sociale medier',
-    detail: 'Integrer Instagram, TikTok og Twitter feeds direkte på siden med live tweets og fan-indhold.',
-    impact: 'Øget organisk reach, bedre brand awareness, viral potentiale'
-  },
-  {
-    id: 5,
-    num: 5,
-    title: 'Newsletter med personaliseret indhold',
-    aud: ['fan', 'sponsor'],
-    pri: 'soon',
-    impl: 'mid',
-    cost: '4.000 kr.',
-    roi: 7,
-    shortDesc: 'Hyppigere kommunikation med fans og sponsorer',
-    detail: 'Ugentlig newsletter med nyheder, åbetsteder og eksklusivt indhold baseret på brugerens interesser.',
-    impact: 'Øget gentagelsesbesøg, bedre retention, højere konvertering'
-  },
-  {
-    id: 6,
-    num: 6,
-    title: 'Merchandise butik integreret på siden',
-    aud: ['fan'],
-    pri: 'soon',
-    impl: 'mid',
-    cost: '6.000 kr.',
-    roi: 8,
-    shortDesc: 'Direkte salg af merchandise til fans',
-    detail: 'Fuldt integreret e-handel løsning med shirts, kasketter, accessories og eventuelle limited editions.',
-    impact: 'Ny indtjeningskanal, øget brand-tilhørlighed, køb-incitament'
-  },
-  {
-    id: 7,
-    num: 7,
-    title: 'Sponsor showcase gallery',
-    aud: ['sponsor'],
-    pri: 'soon',
-    impl: 'low',
-    cost: '2.000 kr.',
-    roi: 6,
-    shortDesc: 'Visibilitetsøgning for sponsorer på siden',
-    detail: 'Dedikeret sektion med sponsor-logos, logowall og interaktive sponsor-cards med links til deres hjemmesider.',
-    impact: 'Øget sponsor-værdi, bedre sponsor-retention, stærkere partnerskaber'
-  },
-  {
-    id: 8,
-    num: 8,
-    title: 'Fan engagement quiz og polls',
-    aud: ['fan'],
-    pri: 'ongoing',
-    impl: 'low',
-    cost: '1.000 kr.',
-    roi: 5,
-    shortDesc: 'Interaktivt indhold der holder fans engageret',
-    detail: 'Quizzer om hold-historie, kort polls om næste kampe, og stemminger for at vælge fan-aktiviteter.',
-    impact: 'Øget time-on-site, bedre social sharing, data-indsigt om fans'
-  },
-  {
-    id: 9,
-    num: 9,
-    title: 'Frivillig-kalender og skiftplanlægning',
-    aud: ['frivillig'],
-    pri: 'soon',
-    impl: 'mid',
-    cost: '3.500 kr.',
-    roi: 7,
-    shortDesc: 'Digitalisering af frivillig-koordination',
-    detail: 'Online system hvor frivillige kan tilmelde sig skifter, se deres tidsplan og få påmindelser.',
-    impact: 'Reduceret administrativt arbejde, færre no-shows, bedre koordination'
-  },
-  {
-    id: 10,
-    num: 10,
-    title: 'Mobile app launch med push notifications',
-    aud: ['fan', 'sponsor'],
-    pri: 'ongoing',
-    impl: 'mid',
-    cost: '8.000 kr.',
-    roi: 9,
-    shortDesc: 'Nærmere forbindelse til users med app-erfaringer',
-    detail: 'Native app med push notifications for game alerts, exclusive app-only deals og offline-læsning af nyheder.',
-    impact: 'Højere engagement rate, bedre retention, nye monetisering-muligheder'
-  }
-];
-
-let currentData = JSON.parse(JSON.stringify(ORIGINAL_DATA));
-
-// ====================== INITIALIZATION ======================
-window.addEventListener('DOMContentLoaded', () => {
-  loadViewPreference();
-  renderDashboard();
-  setupFiltersAndSort();
-});
-
-// ====================== DASHBOARD & RENDERING ======================
-function renderDashboard() {
-  const active = currentData.filter(d => d.pri !== 'done').length;
-  const now = currentData.filter(d => d.pri === 'now').length;
-  const totalCost = currentData.filter(d => d.pri !== 'done').reduce((sum, d) => {
-    const num = parseInt(d.cost.replace(/\D/g, ''));
-    return sum + (isNaN(num) ? 0 : num);
-  }, 0);
-  const avgRoi = currentData.length > 0 ? Math.round(currentData.reduce((sum, d) => sum + d.roi, 0) / currentData.length) : 0;
-
-  document.getElementById('d-active').textContent = active;
-  document.getElementById('d-now').textContent = now;
-  document.getElementById('d-cost').textContent = (totalCost / 1000).toFixed(1) + ' K';
-  document.getElementById('d-roi').textContent = avgRoi;
-}
-
-function renderCards() {
-  const container = document.getElementById('cards-container');
-  const doneContainer = document.getElementById('done-container');
-  const doneSection = document.getElementById('done-section');
-
-  container.innerHTML = '';
-  doneContainer.innerHTML = '';
-  let hasDone = false;
-
-  currentData.forEach(item => {
-    const card = createCard(item);
-    if (item.pri === 'done') {
-      doneContainer.appendChild(card);
-      hasDone = true;
-    } else {
-      container.appendChild(card);
-    }
-  });
-
-  doneSection.style.display = hasDone ? 'block' : 'none';
-  if (container.children.length === 0 && !hasDone) {
-    container.innerHTML = '<div class="empty-state">Ingen anbefalinger. Opret en ny for at komme igang!</div>';
-  }
-}
-
-function createCard(item) {
-  const card = document.createElement('div');
-  card.className = `card ${item.pri === 'done' ? 'done' : ''}`;
-  card.innerHTML = `
-    <div class="card-header" onclick="toggleExpanded(this)">
-      <div class="card-num">${item.num}</div>
-      <div class="card-header-content">
-        <div class="card-title">${item.title}</div>
-        <div class="card-tags">
-          ${item.aud.map(a => `<span class="tag tag-${a}">${a === 'frivillig' ? 'Frivillig' : a === 'sponsor' ? 'Sponsor' : 'Fan'}</span>`).join('')}
-        </div>
-      </div>
-      <div class="card-header-right">
-        <span class="pri-badge pri-${item.pri}">${item.pri.toUpperCase()}</span>
-        <span class="chevron">▼</span>
-      </div>
-    </div>
-    <div class="card-roi">
-      <span class="roi-label-txt">ROI</span>
-      <div class="roi-track"><div class="roi-fill" style="width: ${item.roi * 10}%"></div></div>
-      <span class="roi-score">${item.roi}/10</span>
-      <span class="impl-badge impl-${item.impl}">${item.impl === 'low' ? 'LAV' : 'MID'}</span>
-    </div>
-    <div class="card-footer-meta">
-      <span class="cost-txt">Pris: <span>${item.cost}</span></span>
-      <div class="card-actions">
-        <button class="action-btn edit-btn" onclick="editItem(${item.id})" title="Rediger">✏️</button>
-        <button class="action-btn done-btn" onclick="markDone(${item.id})" title="Markér som færdig">✓</button>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="view-section">
-        <div class="short-desc">${item.shortDesc}</div>
-        <div class="detail-text">${item.detail}</div>
-        <div class="impact-block">
-          <div class="impact-label">Forventet effekt</div>
-          ${item.impact}
-        </div>
-      </div>
-      <div class="edit-section" style="display:none;">
-        <div class="edit-grid">
-          <div class="edit-field full">
-            <label class="edit-label">Titel</label>
-            <input class="edit-input" value="${item.title}" onchange="updateItem(${item.id}, 'title', this.value)">
-          </div>
-          <div class="edit-field">
-            <label class="edit-label">Prioritet</label>
-            <select class="edit-select" onchange="updateItem(${item.id}, 'pri', this.value)">
-              <option value="now" ${item.pri === 'now' ? 'selected' : ''}>Nu</option>
-              <option value="soon" ${item.pri === 'soon' ? 'selected' : ''}>Snart</option>
-              <option value="ongoing" ${item.pri === 'ongoing' ? 'selected' : ''}>Løbende</option>
-              <option value="done" ${item.pri === 'done' ? 'selected' : ''}>Færdig</option>
-            </select>
-          </div>
-          <div class="edit-field">
-            <label class="edit-label">Kompleksitet</label>
-            <select class="edit-select" onchange="updateItem(${item.id}, 'impl', this.value)">
-              <option value="low" ${item.impl === 'low' ? 'selected' : ''}>Lav</option>
-              <option value="mid" ${item.impl === 'mid' ? 'selected' : ''}>Middel</option>
-            </select>
-          </div>
-          <div class="edit-field">
-            <label class="edit-label">ROI</label>
-            <input type="number" class="edit-input" min="1" max="10" value="${item.roi}" onchange="updateItem(${item.id}, 'roi', parseInt(this.value))">
-          </div>
-          <div class="edit-field full">
-            <label class="edit-label">Pris</label>
-            <input class="edit-input" value="${item.cost}" onchange="updateItem(${item.id}, 'cost', this.value)">
-          </div>
-          <div class="edit-field full">
-            <label class="edit-label">Kort beskrivelse</label>
-            <textarea class="edit-textarea" onchange="updateItem(${item.id}, 'shortDesc', this.value)">${item.shortDesc}</textarea>
-          </div>
-          <div class="edit-field full">
-            <label class="edit-label">Detaljer</label>
-            <textarea class="edit-textarea" onchange="updateItem(${item.id}, 'detail', this.value)">${item.detail}</textarea>
-          </div>
-          <div class="edit-field full">
-            <label class="edit-label">Effekt</label>
-            <textarea class="edit-textarea" onchange="updateItem(${item.id}, 'impact', this.value)">${item.impact}</textarea>
-          </div>
-        </div>
-        <button class="edit-save-btn" onclick="toggleEditMode(this, ${item.id})">Gem ændringer</button>
-      </div>
-    </div>
-  `;
-  return card;
-}
-
-function toggleExpanded(header) {
-  const card = header.closest('.card');
-  card.classList.toggle('expanded');
-}
-
-function editItem(id) {
-  const card = document.querySelector(`[onclick*="toggleEditMode(this, ${id})"]`)?.closest('.card');
-  if (card) {
-    card.classList.add('edit-mode');
-    card.querySelector('.edit-section').style.display = 'block';
-    card.querySelector('.view-section').style.display = 'none';
-  }
-}
-
-function toggleEditMode(btn, id) {
-  const card = btn.closest('.card');
-  card.classList.remove('edit-mode');
-  card.querySelector('.edit-section').style.display = 'none';
-  card.querySelector('.view-section').style.display = 'block';
-  renderTableView();
-}
-
-function updateItem(id, field, value) {
-  const item = currentData.find(d => d.id === id);
-  if (item) {
-    item[field] = value;
-    renderCards();
-    renderDashboard();
-  }
-}
-
-function markDone(id) {
-  const item = currentData.find(d => d.id === id);
-  if (item) {
-    item.pri = item.pri === 'done' ? 'now' : 'done';
-    renderCards();
-    renderDashboard();
-  }
-}
-
-// ====================== FILTERS & SORT ======================
-function setupFiltersAndSort() {
-  document.querySelectorAll('.fbtn').forEach(btn => {
-    btn.addEventListener('click', applyFilters);
-  });
-  document.getElementById('sort-select').addEventListener('change', renderCards);
-}
-
-function applyFilters() {
-  const audFilter = document.querySelector('.fbtn[data-aud].active')?.dataset.aud || 'all';
-  const priFilter = document.querySelector('.fbtn[data-pri].active')?.dataset.pri || 'all';
-
-  currentData = ORIGINAL_DATA.filter(item => {
-    const audMatch = audFilter === 'all' || item.aud.includes(audFilter);
-    const priMatch = priFilter === 'all' || item.pri === priFilter;
-    return audMatch && priMatch;
-  });
-
+// ===== VIEW SWITCHING =====
+function switchToCardView() {
+  document.getElementById('cardViewBtn').classList.add('active');
+  document.getElementById('tableViewBtn').classList.remove('active');
+  document.getElementById('cardsViewContainer').style.display = 'block';
+  document.getElementById('tableViewContainer').classList.remove('active');
   renderCards();
-  renderTableView();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.fbtn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const group = this.dataset.aud ? 'aud' : 'pri';
-      document.querySelectorAll(`[data-${group}]`).forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-      applyFilters();
-    });
-  });
-});
+function switchToTableView() {
+  document.getElementById('tableViewBtn').classList.add('active');
+  document.getElementById('cardViewBtn').classList.remove('active');
+  document.getElementById('cardsViewContainer').style.display = 'none';
+  document.getElementById('tableViewContainer').classList.add('active');
+  const filtered = getFilteredRecommendations();
+  const sorted = getSortedRecommendations(filtered);
+  updateTable(sorted);
+}
 
-// ====================== MODAL FUNCTIONS ======================
+// ===== TIMELINE =====
 function openTimeline() {
+  const timelineItems = document.getElementById('timelineItems');
+  timelineItems.innerHTML = '';
+
+  const sorted = getSortedRecommendations(recommendations.filter(r => r.status === 'ongoing'));
+
+  if (sorted.length === 0) {
+    timelineItems.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #999;">Ingen igangværende anbefalinger planlagt.</div>';
+  } else {
+    sorted.forEach((rec, idx) => {
+      const item = document.createElement('div');
+      item.className = `timeline-item ${idx % 2 === 0 ? 'left' : 'right'}`;
+      
+      const totalWeeks = rec.weeks + (rec.months * 4.33);
+      const timeframeText = rec.months > 0 && rec.weeks > 0 
+        ? `${rec.months} måned${rec.months !== 1 ? 'er' : ''} og ${rec.weeks} uge${rec.weeks !== 1 ? 'r' : ''}`
+        : rec.months > 0 
+        ? `${rec.months} måned${rec.months !== 1 ? 'er' : ''}`
+        : `${rec.weeks} uge${rec.weeks !== 1 ? 'r' : ''}`;
+
+      item.innerHTML = `
+        <div class="timeline-marker"></div>
+        <div class="timeline-content-box">
+          <div class="timeline-period">${timeframeText}</div>
+          <h3>${rec.title}</h3>
+          <p>${rec.shortDesc}</p>
+          <span class="timeline-badge ongoing">Igangværende</span>
+        </div>
+      `;
+      timelineItems.appendChild(item);
+    });
+  }
+
   document.getElementById('timelineModal').style.display = 'block';
 }
 
@@ -1498,52 +1561,24 @@ function closeTimeline() {
   document.getElementById('timelineModal').style.display = 'none';
 }
 
-function openNewModal() {
-  document.getElementById('newRecommendationModal').style.display = 'block';
-}
-
-function closeNewModal() {
-  document.getElementById('newRecommendationModal').style.display = 'none';
-}
-
-function saveNewRecommendation() {
-  const title = document.getElementById('newTitle').value;
-  if (!title) return alert('Titel er påkrævet');
-
-  const aud = [];
-  if (document.getElementById('newAudSponsor').checked) aud.push('sponsor');
-  if (document.getElementById('newAudFan').checked) aud.push('fan');
-  if (document.getElementById('newAudFrivillig').checked) aud.push('frivillig');
-
-  const newItem = {
-    id: Math.max(...currentData.map(d => d.id), 0) + 1,
-    num: Math.max(...currentData.map(d => d.num), 0) + 1,
-    title,
-    aud: aud.length ? aud : ['sponsor'],
-    pri: document.getElementById('newPriority').value,
-    impl: document.getElementById('newComplexity').value,
-    cost: document.getElementById('newCost').value || '0 kr.',
-    roi: parseInt(document.getElementById('newROI').value),
-    shortDesc: document.getElementById('newShortDesc').value,
-    detail: document.getElementById('newDetail').value,
-    impact: document.getElementById('newImpact').value
-  };
-
-  currentData.push(newItem);
-  ORIGINAL_DATA.push(JSON.parse(JSON.stringify(newItem)));
-  renderCards();
-  renderTableView();
-  renderDashboard();
-  closeNewModal();
-  document.getElementById('newRecommendationModal').querySelectorAll('input, textarea, select').forEach(el => el.value = '');
-}
-
+// ===== MODAL OUTSIDE CLICK =====
 window.onclick = function(event) {
-  const modal1 = document.getElementById('timelineModal');
-  const modal2 = document.getElementById('newRecommendationModal');
-  if (event.target === modal1) modal1.style.display = 'none';
-  if (event.target === modal2) modal2.style.display = 'none';
+  const modal = document.getElementById('newRecommendationModal');
+  const timelineModal = document.getElementById('timelineModal');
+
+  if (event.target === modal) {
+    closeNewModal();
+  }
+  if (event.target === timelineModal) {
+    closeTimeline();
+  }
 };
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', function() {
+  applyFilters();
+  renderCards();
+});
 </script>
 
 </body>
