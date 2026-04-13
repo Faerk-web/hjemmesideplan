@@ -1,41 +1,1087 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prosliding.dk Recommendations Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prosliding.dk – Anbefalinger</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0D1B3E;
+    --navy-light: #1a2d5a;
+    --gold: #C8A84B;
+    --gold-light: #E8C96A;
+    --gold-pale: #fdf6e3;
+    --white: #ffffff;
+    --bg: #f0f2f7;
+    --card-bg: #ffffff;
+    --text: #0D1B3E;
+    --text-muted: #6b7a99;
+    --border: #e2e7f0;
+    --sponsor-bg: #E6F1FB; --sponsor-text: #0C447C;
+    --fan-bg: #EAF3DE; --fan-text: #27500A;
+    --vol-bg: #FAEEDA; --vol-text: #633806;
+    --now-bg: #FCEBEB; --now-text: #A32D2D;
+    --soon-bg: #FFF3E0; --soon-text: #854F0B;
+    --ongoing-bg: #E6F1FB; --ongoing-text: #185FA5;
+    --done-bg: #f0f0f0; --done-text: #888;
+    --low-bg: #EAF3DE; --low-text: #3B6D11;
+    --mid-bg: #FFF3E0; --mid-text: #854F0B;
+    --shadow: 0 2px 12px rgba(13,27,62,0.08);
+    --shadow-hover: 0 8px 32px rgba(13,27,62,0.15);
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--navy);
+    padding: 2rem 2rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+  }
+  header::after {
+    content: 'SKELETON';
+    position: absolute;
+    right: -10px; top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 120px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.03);
+    letter-spacing: 8px;
+    pointer-events: none;
+    user-select: none;
+  }
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .header-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .header-main {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.1;
+    letter-spacing: 1px;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 0.4rem;
+    font-weight: 300;
+  }
+  .header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .btn-reset {
+    background: rgba(255,255,255,0.08);
+    border: 0.5px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.7);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 500;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .btn-reset:hover { background: rgba(255,255,255,0.15); color: white; }
+
+  /* DASHBOARD */
+  .dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 1.5rem 2rem 0;
+  }
+  .dash-card {
+    background: rgba(255,255,255,0.07);
+    border: 0.5px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    text-align: center;
+  }
+  .dash-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .dash-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .dash-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 3px;
+  }
+
+  /* FILTERS */
+  .filter-bar {
+    max-width: 1200px;
+    margin: 1.5rem auto 0;
+    padding: 0 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  .filter-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-right: 2px;
+  }
+  .filter-sep {
+    width: 1px;
+    height: 20px;
+    background: rgba(255,255,255,0.15);
+    margin: 0 6px;
+  }
+  .fbtn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 0.5px solid rgba(255,255,255,0.2);
+    background: transparent;
+    color: rgba(255,255,255,0.55);
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 500;
+    transition: all 0.18s;
+  }
+  .fbtn:hover { border-color: var(--gold); color: var(--gold); }
+  .fbtn.active { background: var(--gold); border-color: var(--gold); color: var(--navy); font-weight: 700; }
+
+  /* SORT */
+  .sort-bar {
+    max-width: 1200px;
+    margin: 0.75rem auto 0;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sort-label { font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+  .sort-select {
+    background: rgba(255,255,255,0.08);
+    border: 0.5px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.7);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: 'Barlow', sans-serif;
+    cursor: pointer;
+    outline: none;
+  }
+  .sort-select option { background: var(--navy); color: white; }
+
+  /* MAIN CONTENT */
+  .main {
+    max-width: 1200px;
+    margin: 1.5rem auto 2rem;
+    padding: 0 2rem;
+  }
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  /* CARDS GRID */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 780px) { .cards-grid { grid-template-columns: 1fr; } }
+
+  /* CARD */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s, border-color 0.2s;
+    overflow: hidden;
+    position: relative;
+  }
+  .card:hover { box-shadow: var(--shadow-hover); border-color: var(--gold); }
+  .card.done { opacity: 0.65; }
+  .card.done .card-title { text-decoration: line-through; color: var(--text-muted); }
+  .card.editing { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(200,168,75,0.2); }
+  .card.hidden-card { display: none; }
+
+  .card-header {
+    padding: 1rem 1.25rem 0.75rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .card-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--navy);
+    color: var(--gold);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+  }
+  .card.done .card-num { background: var(--done-bg); color: var(--done-text); }
+  .card-header-content { flex: 1; min-width: 0; }
+  .card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    letter-spacing: 0.3px;
+  }
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .tag {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .tag-sponsor { background: var(--sponsor-bg); color: var(--sponsor-text); }
+  .tag-fan { background: var(--fan-bg); color: var(--fan-text); }
+  .tag-vol { background: var(--vol-bg); color: var(--vol-text); }
+  .card-header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .pri-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .pri-now { background: var(--now-bg); color: var(--now-text); }
+  .pri-soon { background: var(--soon-bg); color: var(--soon-text); }
+  .pri-ongoing { background: var(--ongoing-bg); color: var(--ongoing-text); }
+  .pri-done { background: var(--done-bg); color: var(--done-text); }
+  .chevron {
+    font-size: 14px;
+    color: var(--text-muted);
+    transition: transform 0.25s;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .card.expanded .chevron { transform: rotate(180deg); }
+
+  /* ROI BAR */
+  .card-roi {
+    padding: 0 1.25rem 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .roi-label-txt { font-size: 11px; color: var(--text-muted); font-weight: 500; min-width: 26px; }
+  .roi-track {
+    flex: 1;
+    height: 5px;
+    background: #edf0f7;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .roi-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .roi-score {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold);
+    min-width: 36px;
+    text-align: right;
+  }
+  .impl-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .impl-low { background: var(--low-bg); color: var(--low-text); }
+  .impl-mid { background: var(--mid-bg); color: var(--mid-text); }
+
+  .card-footer-meta {
+    padding: 0 1.25rem 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .cost-txt {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .cost-txt span { color: var(--text); font-weight: 600; }
+  .card-actions {
+    display: flex;
+    gap: 6px;
+  }
+  .action-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    transition: all 0.15s;
+    color: var(--text-muted);
+  }
+  .action-btn:hover { background: var(--bg); border-color: var(--gold); color: var(--gold); }
+  .action-btn.done-btn:hover { background: #EAF3DE; border-color: #27500A; color: #27500A; }
+  .action-btn.edit-btn:hover { background: #E6F1FB; border-color: #0C447C; color: #0C447C; }
+  .action-btn.reset-btn:hover { background: var(--now-bg); border-color: var(--now-text); color: var(--now-text); }
+
+  /* EXPANDED BODY */
+  .card-body {
+    display: none;
+    padding: 0 1.25rem 1.25rem;
+    border-top: 0.5px solid var(--border);
+    background: #fafbfd;
+  }
+  .card.expanded .card-body { display: block; }
+
+  .card-body .short-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    padding: 1rem 0 0.75rem;
+    font-style: italic;
+    border-bottom: 0.5px dashed var(--border);
+    margin-bottom: 0.75rem;
+  }
+  .card-body .detail-text {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+  .card-body .impact-block {
+    background: var(--gold-pale);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 0.75rem 1rem;
+    font-size: 12.5px;
+    color: var(--navy);
+    line-height: 1.6;
+  }
+  .impact-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  /* EDIT MODE */
+  .card-body .edit-section {
+    display: none;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 0.5px dashed var(--gold);
+  }
+  .card.edit-mode .card-body .edit-section { display: block; }
+  .card.edit-mode .card-body .view-section { display: none; }
+
+  .edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .edit-field { display: flex; flex-direction: column; gap: 4px; }
+  .edit-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .edit-input, .edit-select, .edit-textarea {
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    background: white;
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 10px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+  .edit-input:focus, .edit-select:focus, .edit-textarea:focus { border-color: var(--gold); }
+  .edit-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+  .edit-full { grid-column: 1 / -1; }
+  .roi-slider-wrap { display: flex; align-items: center; gap: 10px; }
+  .roi-slider {
+    flex: 1;
+    accent-color: var(--gold);
+    height: 4px;
+    cursor: pointer;
+  }
+  .roi-slider-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gold);
+    min-width: 36px;
+  }
+  .edit-save-btn {
+    margin-top: 8px;
+    background: var(--navy);
+    color: var(--gold);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.15s;
+  }
+  .edit-save-btn:hover { background: var(--navy-light); }
+
+  /* DONE SECTION */
+  .done-section { margin-top: 2.5rem; }
+  .done-section .section-title { color: #aaa; }
+  .done-section .cards-grid { opacity: 0.7; }
+
+  /* LEGEND / FOOTER */
+  footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.45);
+    font-size: 11px;
+    padding: 1.5rem 2rem;
+    text-align: center;
+    line-height: 2;
+    margin-top: 2rem;
+  }
+  footer strong { color: rgba(255,255,255,0.7); }
+
+  /* EMPTY STATE */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* ANIMATIONS */
+  .card { animation: fadeIn 0.3s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .card-body { animation: slideDown 0.2s ease; }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+  @media (max-width: 600px) {
+    .dashboard { grid-template-columns: repeat(2, 1fr); }
+    header, .filter-bar, .sort-bar, .main { padding-left: 1rem; padding-right: 1rem; }
+    .header-main { font-size: 26px; }
+    .edit-grid { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
-    <header>
-        <h1>Prosliding.dk Recommendations Dashboard</h1>
-        <nav>
-            <ul>
-                <li><a href="#recommendations">Recommendations</a></li>
-                <li><a href="#feedback">Feedback</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="recommendations">
-            <h2>Recommendations</h2>
-            <ul>
-                <li>Recommendation 1</li>
-                <li>Recommendation 2</li>
-                <li>Recommendation 3</li>
-            </ul>
-        </section>
-        <section id="feedback">
-            <h2>Feedback</h2>
-            <form>
-                <label for="comment">Leave your feedback:</label>
-                <textarea id="comment" name="comment" rows="4" required></textarea>
-                <button type="submit">Submit</button>
-            </form>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2026 Prosliding.dk</p>
-    </footer>
+
+<header>
+  <div class="header-top">
+    <div>
+      <div class="header-title">Prosliding.dk</div>
+      <div class="header-main">Anbefalede<br>Forbedringer</div>
+      <div class="header-sub">Sponsor-tiltrækning · Fan engagement · Frivilligrekruttering</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-reset" onclick="resetAll()">↺ Nulstil alt</button>
+    </div>
+  </div>
+
+  <div class="dashboard" id="dashboard">
+    <div class="dash-card">
+      <div class="dash-label">Aktive</div>
+      <div class="dash-value" id="d-active">—</div>
+      <div class="dash-sub">anbefalinger</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-label">Prioritet Nu</div>
+      <div class="dash-value" id="d-now">—</div>
+      <div class="dash-sub">implementér nu</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-label">Min. budget</div>
+      <div class="dash-value" id="d-cost">—</div>
+      <div class="dash-sub">estimeret</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-label">Gns. ROI</div>
+      <div class="dash-value" id="d-roi">—</div>
+      <div class="dash-sub">ud af 10</div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">Målgruppe</span>
+    <div class="filter-group" id="aud-filters">
+      <button class="fbtn active" data-aud="all">Alle</button>
+      <button class="fbtn" data-aud="sponsor">Sponsor</button>
+      <button class="fbtn" data-aud="fan">Fan</button>
+      <button class="fbtn" data-aud="frivillig">Frivillig</button>
+    </div>
+    <div class="filter-sep"></div>
+    <span class="filter-label">Prioritet</span>
+    <div class="filter-group" id="pri-filters">
+      <button class="fbtn active" data-pri="all">Alle</button>
+      <button class="fbtn" data-pri="now">Nu</button>
+      <button class="fbtn" data-pri="soon">Snart</button>
+      <button class="fbtn" data-pri="ongoing">Løbende</button>
+    </div>
+  </div>
+
+  <div class="sort-bar">
+    <span class="sort-label">Sortér</span>
+    <select class="sort-select" id="sort-select" onchange="renderCards()">
+      <option value="default">Standard (#)</option>
+      <option value="roi">ROI-indeks (høj → lav)</option>
+      <option value="cost">Estimeret pris (lav → høj)</option>
+      <option value="priority">Prioritet (Nu → Løbende)</option>
+    </select>
+  </div>
+</header>
+
+<div class="main">
+  <div class="section-title" id="active-label">Aktive anbefalinger</div>
+  <div class="cards-grid" id="cards-container"></div>
+
+  <div class="done-section" id="done-section" style="display:none">
+    <div class="section-title">Afsluttede</div>
+    <div class="cards-grid" id="done-container"></div>
+  </div>
+</div>
+
+<footer>
+  <strong>Kompleksitet:</strong> Lav = under 1 dag &nbsp;·&nbsp; Middel = 1–3 dage, ekstern hjælp kan være nødvendig<br>
+  <strong>Prioritet:</strong> Nu = implementér denne måned &nbsp;·&nbsp; Snart = 30–60 dage &nbsp;·&nbsp; Løbende = kræver løbende drift<br>
+  <span style="opacity:0.4">Prosliding.dk · Team Vestergaard Johansen · Vej mod OL</span>
+</footer>
+
+<script>
+const ORIGINAL_DATA = [
+  {
+    id: 1,
+    title: "Stat-bar med live resultater",
+    audience: ["sponsor","fan"],
+    roi: 10,
+    priority: "now",
+    complexity: "low",
+    cost: "0–3.000 kr.",
+    shortDesc: "Skaber øjeblikkelig troværdighed. Sponsorer ser dokumentation på 10 sekunder. Giver urgency med OL-nedtælling.",
+    detail: "En synlig stat-bar øverst på forsiden kommunikerer øjeblikkeligt, at dette er et projekt på verdensklasseniveau. Rasmus' top 6-placering på verdensranglisten og Nannas første seniorpodieplads er tal, der taler for sig selv – men kun hvis de er synlige. Kombineret med en live OL-nedtælling skabes der urgency og en grund til at vende tilbage. Sponsorer, der lander på forsiden, skal ikke lede efter dokumentation – den skal møte dem med det samme. Teknisk kan dette løses manuelt (opdateres efter hvert løb) eller via en IBSF API-integration. Manuel opdatering er gratis og tager 5 minutter. API-løsning kræver en udvikler og koster 1.500–3.000 kr. engangs.",
+    impact: "Øget tillid fra første sekund. Lavere bounce rate. Stærkere pitch til potentielle partnere.",
+    done: false
+  },
+  {
+    id: 2,
+    title: "Konkrete sponsorpakker med priser",
+    audience: ["sponsor"],
+    roi: 9.5,
+    priority: "now",
+    complexity: "low",
+    cost: "0 kr.",
+    shortDesc: "Fjerner usikkerhed og giver salgschefer noget konkret at præsentere internt.",
+    detail: "Den nuværende partnerskabsside beskriver filosofien bag samarbejde, men giver ingen konkret information om hvad et partnerskab indeholder eller koster. Det er en barriere. En potentiel sponsor, der ikke kender projektet, vil ikke tage den første kontakt, hvis de ikke ved hvad de går ind til. Løsningen er tre tydelige pakkeniveauer – fx Startpakken (fra 15.000 kr./år), Team-partner (fra 40.000 kr./år) og Hovedpartner (fra 100.000 kr./år) – med konkrete fordele beskrevet pr. niveau: logoeksponering, sociale medier, foredrag, netværksadgang og co-branding muligheder. Priserne kan angives som "fra X kr." for at bevare fleksibilitet. Det vigtigste er, at en salgschef kan åbne siden og inden for 60 sekunder forstå hvad de får og hvad det koster.",
+    impact: "Flere indgående sponsorhenvendelser. Kortere salgsproces. Større konvertering fra besøg til dialog.",
+    done: false
+  },
+  {
+    id: 3,
+    title: "Dedikeret frivilligtekst med roller",
+    audience: ["frivillig"],
+    roi: 8.5,
+    priority: "now",
+    complexity: "low",
+    cost: "0 kr.",
+    shortDesc: "Motiverer og præciserer hvad man tilbyder sig til som frivillig.",
+    detail: "Den nuværende frivilligtekst er en direkte kopi af fanklubsteksten, hvilket signalerer at siden ikke er færdigudviklet. En potentiel frivillig, der læser den, får ingen svar på det vigtigste spørgsmål: hvad skal jeg konkret hjælpe med? Frivilligteksten skal erstattes med en dedikeret invitation, der beskriver specifikke roller: sociale medier og content creation, event-support ved løb og arrangementer, vedligehold og udvikling af startbanen i Aarhus, logistik og koordinering, pressekontakt og kommunikationshjælp. For hver rolle beskrives kort hvad det kræver og hvad man får ud af det. Teksten skal slutte med en personlig invitation fra Nanna og Rasmus – ikke en generisk formular.",
+    impact: "Flere og mere motiverede frivillige. Stærkere fællesskabsfølelse. Mere organisk spredning af projektet.",
+    done: false
+  },
+  {
+    id: 4,
+    title: "Live OL-kvalifikationsstatus",
+    audience: ["fan","sponsor"],
+    roi: 8,
+    priority: "now",
+    complexity: "low",
+    cost: "0 kr.",
+    shortDesc: "Forvandler forsiden fra statisk præsentation til levende fortælling med real-time relevans.",
+    detail: "OL-kvalifikationen er i fuld gang – men det fremgår ikke tydeligt af forsiden. En ny besøgende forstår ikke automatisk dramatikken: at hver eneste konkurrence tæller, at point akkumuleres hen mod en afgørelse, og at Danmark måske for første gang i historien sender to skeleton-atleter til OL. En kort statussektion øverst på forsiden – opdateret efter hvert løb – løser dette. Den behøver ikke være lang: tre linjer om den aktuelle situation, Rasmus' og Nannas nuværende ranking, og hvad der er på spil i de kommende uger. Det skaber en live-følelse og giver fans og sponsorer en grund til at vende tilbage løbende. Tidsforbrug: ca. 15 minutter pr. løbsweekend.",
+    impact: "Øget gentagne besøg. Stærkere emotionel investering fra fans. Mere overbevisende sponsor-pitch.",
+    done: false
+  },
+  {
+    id: 5,
+    title: "Tydelige fanklubniveauer",
+    audience: ["fan"],
+    roi: 7.5,
+    priority: "now",
+    complexity: "low",
+    cost: "0–1.500 kr.",
+    shortDesc: "Fjerner gætteri og øger betalingsvilje ved tilmelding til More Than One.",
+    detail: "Fanklubben More Than One præsenteres med en stærk fortælling, men tilmeldingsprocessen beder brugeren om at vælge mellem Basis, Plus og Premium – uden at forklare hvad de tre niveauer indeholder. Det er som at stå foran en menu uden priser eller beskrivelser. En sammenligningstabel løser problemet. Basis kan fx indeholde: digital velkomstpakke, nyhedsbrev og adgang til eksklusivt indhold. Plus tilføjer: merchandise (t-shirt og hue), tidlig adgang til nyheder og mulighed for at deltage i virtuelle Q&A-sessioner med atleterne. Premium tilføjer: personlig tak fra Nanna og Rasmus, invitation til årsarrangement og navn i credits på hjemmesiden. Priserne sættes synligt, og der tilbydes en "mest populær"-badge på det midterste niveau for at guide valget.",
+    impact: "Flere tilmeldinger. Højere gennemsnitlig betalingsvilje. Mindre usikkerhed ved konverteringstrinnet.",
+    done: false
+  },
+  {
+    id: 6,
+    title: "MobilePay og Stripe-integration",
+    audience: ["fan","sponsor"],
+    roi: 9,
+    priority: "now",
+    complexity: "mid",
+    cost: "2.000–8.000 kr.",
+    shortDesc: "Eliminerer friktion og muliggør impulsdonation med ét klik.",
+    detail: "Den nuværende støtteformular beder brugere om at lave en bankoverførsel eller bestille en faktura. Det er en massiv friktion i 2025, hvor de fleste impulsive donationer dør i det øjeblik, der kræves mere end ét klik. MobilePay er standarden for danske forbrugere og kan integreres via et WordPress-plugin for 2.000–4.000 kr. Stripe tilbyder international kortbetaling og abonnementsbetalinger (til månedlige støttemedlemmer) og koster 1,4–2,9% pr. transaktion uden opstartsgebyr. Bankoverførsel og faktura bevares som sekundære muligheder. Effekten af denne ændring alene vil sandsynligvis fordoble konverteringsraten fra støttesiden. En bruger, der er rørt af en sæsonopdatering og vil støtte med 100 kr. her og nu, skal ikke tvinges til netbanken.",
+    impact: "Sandsynligvis fordobling af konverteringsraten fra støttesiden. Øget impulsdonation. Stabil månedlig indkomst fra abonnementer.",
+    done: false
+  },
+  {
+    id: 7,
+    title: "Dybe atletprofiler",
+    audience: ["sponsor","fan"],
+    roi: 7,
+    priority: "soon",
+    complexity: "mid",
+    cost: "0–5.000 kr.",
+    shortDesc: "Skaber menneskelig forbindelse – sponsorer investerer i mennesker, ikke kun eksponering.",
+    detail: "Nanna og Rasmus præsenteres primært via deres Instagram-feeds, som er levende og autentiske, men ustrukturerede. Der er ingen dedikeret profiloplevelse, der fortæller deres fulde historie: hvor kommer de fra, hvad driver dem, hvad har de ofret for at nå hertil, og hvad er deres mål ud over OL? En sponsor, der overvejer et partnerskab, vil gerne kende menneskene bag resultaterne. Profilen for hver atlet bør indeholde: et stærkt portræt-billede, en personlig tagline, en kort tidslinje (fx "Fra foreningsatlet i Aarhus til top 6 i verden på tre sæsoner"), et direkte citat om motivation og mål, og en beskrivelse af hvad de bringer til et partnerskab udover eksponering – fx personlighed, netværk, foredragskompetence og tilstedeværelse på sociale medier.",
+    impact: "Stærkere emotionel forbindelse. Mere tid på siden. Bedre forudsætning for sponsorkonvertering.",
+    done: false
+  },
+  {
+    id: 8,
+    title: "Resultatnotifikationer og løbsopdateringer",
+    audience: ["fan"],
+    roi: 7,
+    priority: "soon",
+    complexity: "mid",
+    cost: "0–500 kr./md.",
+    shortDesc: "Bygger vane hos fans og skaber en kommunikationskanal teamet ejer selv.",
+    detail: "Løbsplanen sender i dag fans direkte til IBSF's hjemmeside – og de vender ikke nødvendigvis tilbage til prosliding.dk. En simpel "Følg næste løb"-widget med mulighed for e-mail-påmindelse før hvert løb og resultatopdatering bagefter løser dette. Mailchimp er gratis op til 500 abonnenter og integrerer nemt med WordPress. Arbejdsgangen er enkel: fredag aften sendes en kort mail med "I morgen kl. 13 kører Rasmus i Lillehammer – her er hvad du skal vide." Søndag aften sendes et resultat. Det tager 20 minutter og bygger en vane. En voksende e-mailliste er desuden guld værd til crowdfunding-kampagner og sponsor-dokumentation.",
+    impact: "Gentagne besøg. Voksende community. Direkte kanal til fans uafhængigt af sociale medier.",
+    done: false
+  },
+  {
+    id: 9,
+    title: "Aktiv crowdfunding-kampagne",
+    audience: ["fan"],
+    roi: 6,
+    priority: "ongoing",
+    complexity: "mid",
+    cost: "500–2.000 kr.",
+    shortDesc: "Konkret mål og synlig fremdrift aktiverer social proof-effekten.",
+    detail: "Crowdfunding beskrives på siden som et koncept, men der er ingen aktiv kampagne, ingen progress bar og intet konkret mål. Det føles som en parkeret idé. En aktiv kampagne kræver tre ting: et specifikt mål (fx "Hjælp os til træningslejr i Sigulda – mål: 30.000 kr."), en synlig progress bar der viser fremgang i realtid, og en kort fortælling om præcis hvad pengene går til og hvad det betyder for sæsonen. Kampagner bør knyttes til konkrete begivenheder: en kommende træningslejr, et nyt udstyrsbehov eller en ekstraordinær mulighed. En progress bar, der nærmer sig målet, udløser social proof-effekten: folk støtter fordi de kan se at andre gør det.",
+    impact: "Højere konvertering fra passive besøgende. Gentagende bidrag. Stærkere fællesskabsfølelse.",
+    done: false
+  },
+  {
+    id: 10,
+    title: "Social proof og presseomtale",
+    audience: ["sponsor","fan"],
+    roi: 7.5,
+    priority: "soon",
+    complexity: "low",
+    cost: "0 kr.",
+    shortDesc: "Reducerer skepsis og validerer projektet eksternt fra første sekund.",
+    detail: "En ny besøgende – og især en potentiel sponsor – ser ingen dokumentation for at andre allerede tror på dette projekt. Der er ingen partnerlogoer, ingen mediecitater og ingen "som set i"-sektion. Det er en overset mulighed, fordi selv minimal social proof ændrer dramatisk på tilliden hos nye besøgende. Løsningen er enkel: en logobar med eksisterende partnere (selv 2–3 logoer gør en forskel), et enkelt sponsorcitat, og et medie-badge hvis der har været omtale i fx TV2 Sport, DR Sport eller lokale medier. Partnerlogoer kræver blot en tilladelse pr. e-mail. Hele sektionen kan designes og implementeres på én dag uden teknisk hjælp.",
+    impact: "Hurtigere tillid. Stærkere første indtryk. Lavere barriere for sponsorkontakt.",
+    done: false
+  }
+];
+
+const STORAGE_KEY = 'prosliding_recs_v1';
+let data = [];
+let audFilter = 'all';
+let priFilter = 'all';
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) { data = JSON.parse(saved); return; }
+  } catch(e) {}
+  data = JSON.parse(JSON.stringify(ORIGINAL_DATA));
+}
+
+function saveData() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function resetAll() {
+  if (!confirm('Nulstil alle ændringer til original data?')) return;
+  data = JSON.parse(JSON.stringify(ORIGINAL_DATA));
+  saveData();
+  renderCards();
+  updateDashboard();
+}
+
+function getAudTags(aud) {
+  return aud.map(a => {
+    if (a === 'sponsor') return '<span class="tag tag-sponsor">Sponsor</span>';
+    if (a === 'fan') return '<span class="tag tag-fan">Fan</span>';
+    if (a === 'frivillig') return '<span class="tag tag-vol">Frivillig</span>';
+    return '';
+  }).join('');
+}
+
+function getPriBadge(p) {
+  if (p === 'now') return '<span class="pri-badge pri-now">Nu</span>';
+  if (p === 'soon') return '<span class="pri-badge pri-soon">Snart</span>';
+  if (p === 'ongoing') return '<span class="pri-badge pri-ongoing">Løbende</span>';
+  return '<span class="pri-badge pri-done">Afsluttet</span>';
+}
+
+function getComplexBadge(c) {
+  if (c === 'low') return '<span class="impl-badge impl-low">Lav</span>';
+  return '<span class="impl-badge impl-mid">Middel</span>';
+}
+
+function getPriOrder(p) {
+  if (p === 'now') return 0;
+  if (p === 'soon') return 1;
+  if (p === 'ongoing') return 2;
+  return 3;
+}
+
+function getMinCost(costStr) {
+  const nums = costStr.replace(/\./g,'').match(/\d+/g);
+  return nums ? parseInt(nums[0]) : 0;
+}
+
+function getSortedData(items) {
+  const sort = document.getElementById('sort-select').value;
+  const arr = [...items];
+  if (sort === 'roi') arr.sort((a,b) => b.roi - a.roi);
+  else if (sort === 'cost') arr.sort((a,b) => getMinCost(a.cost) - getMinCost(b.cost));
+  else if (sort === 'priority') arr.sort((a,b) => getPriOrder(a.priority) - getPriOrder(b.priority));
+  else arr.sort((a,b) => a.id - b.id);
+  return arr;
+}
+
+function cardMatchesFilter(item) {
+  if (audFilter !== 'all' && !item.audience.includes(audFilter)) return false;
+  if (priFilter !== 'all' && item.priority !== priFilter) return false;
+  return true;
+}
+
+function buildCard(item) {
+  const num = String(item.id).padStart(2,'0');
+  const roiPct = (item.roi / 10 * 100).toFixed(0);
+  return `
+  <div class="card${item.done?' done':''}" id="card-${item.id}">
+    <div class="card-header" onclick="toggleCard(${item.id})">
+      <div class="card-num">${num}</div>
+      <div class="card-header-content">
+        <div class="card-title">${item.title}</div>
+        <div class="card-tags">${getAudTags(item.audience)}</div>
+      </div>
+      <div class="card-header-right">
+        ${getPriBadge(item.priority)}
+        <div class="chevron">▾</div>
+      </div>
+    </div>
+    <div class="card-roi" onclick="toggleCard(${item.id})">
+      <span class="roi-label-txt">ROI</span>
+      <div class="roi-track"><div class="roi-fill" id="roi-fill-${item.id}" style="width:${roiPct}%"></div></div>
+      <span class="roi-score" id="roi-score-${item.id}">${item.roi}/10</span>
+      ${getComplexBadge(item.complexity)}
+    </div>
+    <div class="card-footer-meta" onclick="toggleCard(${item.id})">
+      <span class="cost-txt">Estimat: <span>${item.cost}</span></span>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="action-btn edit-btn" title="Rediger" onclick="toggleEdit(${item.id})">✏️</button>
+        <button class="action-btn done-btn" title="${item.done?'Genåbn':'Markér afsluttet'}" onclick="toggleDone(${item.id})">${item.done?'↩':'✓'}</button>
+        <button class="action-btn reset-btn" title="Nulstil dette kort" onclick="resetCard(${item.id})">↺</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="view-section">
+        <div class="short-desc">${item.shortDesc}</div>
+        <div class="detail-text">${item.detail}</div>
+        <div class="impact-block">
+          <div class="impact-label">Forventet effekt</div>
+          ${item.impact}
+        </div>
+      </div>
+      <div class="edit-section">
+        <div class="edit-grid">
+          <div class="edit-field edit-full">
+            <label class="edit-label">Titel</label>
+            <input class="edit-input" id="e-title-${item.id}" value="${item.title}">
+          </div>
+          <div class="edit-field">
+            <label class="edit-label">Prioritet</label>
+            <select class="edit-select" id="e-pri-${item.id}">
+              <option value="now" ${item.priority==='now'?'selected':''}>Nu</option>
+              <option value="soon" ${item.priority==='soon'?'selected':''}>Snart</option>
+              <option value="ongoing" ${item.priority==='ongoing'?'selected':''}>Løbende</option>
+            </select>
+          </div>
+          <div class="edit-field">
+            <label class="edit-label">Kompleksitet</label>
+            <select class="edit-select" id="e-comp-${item.id}">
+              <option value="low" ${item.complexity==='low'?'selected':''}>Lav</option>
+              <option value="mid" ${item.complexity==='mid'?'selected':''}>Middel</option>
+            </select>
+          </div>
+          <div class="edit-field edit-full">
+            <label class="edit-label">Estimeret pris</label>
+            <input class="edit-input" id="e-cost-${item.id}" value="${item.cost}">
+          </div>
+          <div class="edit-field edit-full">
+            <label class="edit-label">ROI-indeks (${item.roi}/10)</label>
+            <div class="roi-slider-wrap">
+              <input type="range" class="roi-slider" id="e-roi-${item.id}" min="1" max="10" step="0.5" value="${item.roi}"
+                oninput="document.getElementById('e-roi-val-${item.id}').textContent=this.value+'/10'">
+              <span class="roi-slider-val" id="e-roi-val-${item.id}">${item.roi}/10</span>
+            </div>
+          </div>
+          <div class="edit-field edit-full">
+            <label class="edit-label">Kort beskrivelse</label>
+            <textarea class="edit-textarea" id="e-short-${item.id}">${item.shortDesc}</textarea>
+          </div>
+          <div class="edit-field edit-full">
+            <label class="edit-label">Detaljeret tekst</label>
+            <textarea class="edit-textarea" style="min-height:120px" id="e-detail-${item.id}">${item.detail}</textarea>
+          </div>
+          <div class="edit-field edit-full">
+            <label class="edit-label">Forventet effekt</label>
+            <textarea class="edit-textarea" id="e-impact-${item.id}">${item.impact}</textarea>
+          </div>
+        </div>
+        <button class="edit-save-btn" onclick="saveCard(${item.id})">Gem ændringer</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderCards() {
+  const container = document.getElementById('cards-container');
+  const doneContainer = document.getElementById('done-container');
+  const doneSection = document.getElementById('done-section');
+
+  const active = getSortedData(data.filter(d => !d.done && cardMatchesFilter(d)));
+  const done = data.filter(d => d.done);
+
+  container.innerHTML = active.length
+    ? active.map(buildCard).join('')
+    : '<div class="empty-state">Ingen anbefalinger matcher det valgte filter.</div>';
+
+  if (done.length) {
+    doneContainer.innerHTML = done.map(buildCard).join('');
+    doneSection.style.display = 'block';
+  } else {
+    doneSection.style.display = 'none';
+  }
+
+  expandedCards.forEach(id => {
+    const el = document.getElementById('card-'+id);
+    if (el) el.classList.add('expanded');
+  });
+  editCards.forEach(id => {
+    const el = document.getElementById('card-'+id);
+    if (el) { el.classList.add('expanded'); el.classList.add('edit-mode'); }
+  });
+
+  updateDashboard();
+}
+
+let expandedCards = new Set();
+let editCards = new Set();
+
+function toggleCard(id) {
+  const el = document.getElementById('card-'+id);
+  if (el.classList.contains('expanded')) {
+    el.classList.remove('expanded');
+    expandedCards.delete(id);
+  } else {
+    el.classList.add('expanded');
+    expandedCards.add(id);
+  }
+}
+
+function toggleEdit(id) {
+  const el = document.getElementById('card-'+id);
+  if (el.classList.contains('edit-mode')) {
+    el.classList.remove('edit-mode');
+    editCards.delete(id);
+  } else {
+    el.classList.add('expanded','edit-mode');
+    expandedCards.add(id);
+    editCards.add(id);
+  }
+}
+
+function saveCard(id) {
+  const item = data.find(d => d.id === id);
+  if (!item) return;
+  item.title = document.getElementById('e-title-'+id).value;
+  item.priority = document.getElementById('e-pri-'+id).value;
+  item.complexity = document.getElementById('e-comp-'+id).value;
+  item.cost = document.getElementById('e-cost-'+id).value;
+  item.roi = parseFloat(document.getElementById('e-roi-'+id).value);
+  item.shortDesc = document.getElementById('e-short-'+id).value;
+  item.detail = document.getElementById('e-detail-'+id).value;
+  item.impact = document.getElementById('e-impact-'+id).value;
+  saveData();
+  editCards.delete(id);
+  renderCards();
+  expandedCards.add(id);
+  const el = document.getElementById('card-'+id);
+  if (el) el.classList.add('expanded');
+}
+
+function toggleDone(id) {
+  const item = data.find(d => d.id === id);
+  if (!item) return;
+  item.done = !item.done;
+  expandedCards.delete(id);
+  editCards.delete(id);
+  saveData();
+  renderCards();
+}
+
+function resetCard(id) {
+  const original = ORIGINAL_DATA.find(d => d.id === id);
+  if (!original) return;
+  const idx = data.findIndex(d => d.id === id);
+  data[idx] = JSON.parse(JSON.stringify(original));
+  expandedCards.delete(id);
+  editCards.delete(id);
+  saveData();
+  renderCards();
+}
+
+function updateDashboard() {
+  const active = data.filter(d => !d.done);
+  const nowCount = active.filter(d => d.priority === 'now').length;
+  const avgRoi = active.length ? (active.reduce((s,d) => s+d.roi,0)/active.length).toFixed(1) : 0;
+  const totalMin = active.reduce((s,d) => s + getMinCost(d.cost), 0);
+  document.getElementById('d-active').textContent = active.length;
+  document.getElementById('d-now').textContent = nowCount;
+  document.getElementById('d-cost').textContent = totalMin > 0 ? totalMin.toLocaleString('da-DK')+ ' kr.' : '0 kr.';
+  document.getElementById('d-roi').textContent = avgRoi;
+}
+
+document.getElementById('aud-filters').addEventListener('click', e => {
+  const btn = e.target.closest('.fbtn');
+  if (!btn) return;
+  document.querySelectorAll('#aud-filters .fbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  audFilter = btn.dataset.aud;
+  renderCards();
+});
+document.getElementById('pri-filters').addEventListener('click', e => {
+  const btn = e.target.closest('.fbtn');
+  if (!btn) return;
+  document.querySelectorAll('#pri-filters .fbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  priFilter = btn.dataset.pri;
+  renderCards();
+});
+
+loadData();
+renderCards();
+</script>
 </body>
 </html>
