@@ -3,1377 +3,1396 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prosliding.dk – Initiativer</title>
+<title>Skeleton – Initiativstyring</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ─── TOKENS ─────────────────────────────────────────────────────────────── */
-:root {
-  --accent:      #da253c;
-  --accent-l:    #f04056;
-  --accent-pale: #fdeaed;
-  --white:       #ffffff;
-  --bg:          #f5f6f8;
-  --card-bg:     #ffffff;
-  --text:        #111827;
-  --muted:       #6b7280;
-  --border:      #e5e7eb;
-  --hdr:         #1f2937;
-  --hdr-dark:    #111827;
-  --low-bg:  #f0fdf4; --low-txt:  #15803d;
-  --mid-bg:  #fffbeb; --mid-txt:  #b45309;
-  --high-bg: #fef2f2; --high-txt: #b91c1c;
-  --done-bg: #f3f4f6; --done-txt: #9ca3af;
-  --on-bg:   #eff6ff; --on-txt:   #1d4ed8;
-  --shadow:      0 2px 12px rgba(0,0,0,0.07);
-  --shadow-h:    0 8px 28px rgba(0,0,0,0.13);
-  --radius:      12px;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  :root {
+    --accent: #da253c;
+    --accent-pale: #fdeaed;
+    --sidebar-bg: #1e1e1e;
+    --sidebar-width: 240px;
+    --white: #ffffff;
+    --bg: #f5f5f5;
+    --card-bg: #ffffff;
+    --text: #1a1a1a;
+    --text-muted: #777;
+    --border: #e0e0e0;
+    --gray-light: #f0f0f0;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --shadow-hover: 0 8px 32px rgba(0,0,0,0.12);
+    --radius: 12px;
+    --sponsor-bg: #E6F1FB; --sponsor-text: #0C447C;
+    --fan-bg: #EAF3DE;     --fan-text: #27500A;
+    --vol-bg: #FAEEDA;     --vol-text: #633806;
+  }
 
-/* ─── HEADER ──────────────────────────────────────────────────────────────── */
-header {
-  background: var(--hdr);
-  padding: 2rem 2rem 0;
-  position: relative; overflow: hidden;
-}
-header::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0;
-  height: 4px; background: var(--accent);
-}
-header::after {
-  content: 'PROSLIDING';
-  position: absolute; right: -10px; top: 50%; transform: translateY(-50%);
-  font-family: 'Barlow Condensed', sans-serif; font-size: 110px; font-weight: 800;
-  color: rgba(255,255,255,0.025); letter-spacing: 8px; pointer-events: none; user-select: none;
-}
-.header-top {
-  display: flex; align-items: flex-start; justify-content: space-between;
-  flex-wrap: wrap; gap: 1rem; max-width: 1200px; margin: 0 auto; padding-bottom: 1.5rem;
-}
-.header-title { font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:600; color:var(--accent); letter-spacing:3px; text-transform:uppercase; margin-bottom:0.4rem; }
-.header-main  { font-family:'Barlow Condensed',sans-serif; font-size:36px; font-weight:800; color:white; line-height:1.1; letter-spacing:1px; }
-.header-sub   { font-size:13px; color:rgba(255,255,255,0.45); margin-top:0.4rem; font-weight:300; }
-.header-actions { display:flex; gap:8px; align-items:center; flex-shrink:0; flex-wrap:wrap; }
-.btn-new {
-  background: var(--accent); border: none; color: white;
-  padding: 9px 18px; border-radius: 8px; cursor: pointer;
-  font-size: 13px; font-family:'Barlow',sans-serif; font-weight:600; transition: all 0.2s;
-}
-.btn-new:hover { background: var(--accent-l); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ─── DASHBOARD ───────────────────────────────────────────────────────────── */
-.dashboard {
-  max-width: 1200px; margin: 0 auto;
-  display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; padding-bottom: 1.5rem;
-}
-.dash-card { background:rgba(255,255,255,0.06); border:0.5px solid rgba(255,255,255,0.1); border-radius:10px; padding:1rem 1.25rem; text-align:center; }
-.dash-label { font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:2px; text-transform:uppercase; font-weight:600; margin-bottom:6px; }
-.dash-value { font-family:'Barlow Condensed',sans-serif; font-size:28px; font-weight:700; color:var(--accent); line-height:1; }
-.dash-sub   { font-size:11px; color:rgba(255,255,255,0.3); margin-top:3px; }
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
 
-/* ─── FILTER PANEL ────────────────────────────────────────────────────────── */
-.filter-panel { background: var(--hdr-dark); border-top: 1px solid rgba(255,255,255,0.07); padding: 0.85rem 2rem; }
-.filter-panel-inner { max-width:1200px; margin:0 auto; display:flex; flex-direction:column; gap:6px; }
-.filter-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-.filter-row-lbl { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.32); min-width:86px; flex-shrink:0; }
-.fchips { display:flex; gap:4px; flex-wrap:wrap; align-items:center; flex:1; }
-.fchip {
-  padding:4px 12px; border-radius:20px; border:1px solid rgba(255,255,255,0.14);
-  background:transparent; color:rgba(255,255,255,0.48);
-  cursor:pointer; font-size:11px; font-family:'Barlow',sans-serif; font-weight:500; transition:all 0.15s;
-  display:inline-flex; align-items:center; gap:5px;
-}
-.fchip:hover { border-color:var(--accent); color:var(--accent); }
-.fchip.active { background:var(--accent); border-color:var(--accent); color:white; font-weight:700; }
-.fchip .dot { width:7px; height:7px; border-radius:50%; display:inline-block; flex-shrink:0; }
-.view-chips { display:flex; gap:4px; }
-.vchip {
-  padding:4px 12px; border-radius:20px; border:1px solid rgba(255,255,255,0.14);
-  background:transparent; color:rgba(255,255,255,0.48);
-  cursor:pointer; font-size:11px; font-family:'Barlow',sans-serif; font-weight:500; transition:all 0.15s;
-}
-.vchip:hover { border-color:rgba(255,255,255,0.4); color:rgba(255,255,255,0.8); }
-.vchip.active { background:white; border-color:white; color:var(--text); font-weight:700; }
-.sort-sel {
-  padding:4px 10px; border-radius:20px; border:1px solid rgba(255,255,255,0.14);
-  background:transparent; color:rgba(255,255,255,0.55); font-size:11px; font-family:'Barlow',sans-serif;
-  cursor:pointer; outline:none; margin-left:auto;
-}
-.sort-sel option { background:#1f2937; color:white; }
+  /* ===== APP SHELL ===== */
+  .app-layout { display: flex; min-height: 100vh; }
 
-/* ─── WORKSPACE SELECTION BAR ──────────────────────────────────────────────── */
-.ws-bar {
-  background: var(--hdr-dark);
-  border-top: 1px solid rgba(255,255,255,0.07);
-  padding: 0.6rem 2rem;
-}
-.ws-bar-inner {
-  max-width: 1200px; margin: 0 auto;
-  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-}
-.ws-bar-lbl { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.32); flex-shrink:0; margin-right:4px; }
-.wsbtn {
-  padding:5px 14px; border-radius:20px; border:1px solid rgba(255,255,255,0.14);
-  background:transparent; color:rgba(255,255,255,0.55);
-  cursor:pointer; font-size:12px; font-family:'Barlow',sans-serif; font-weight:500; transition:all 0.15s;
-  display:inline-flex; align-items:center; gap:6px;
-}
-.wsbtn:hover { border-color:rgba(255,255,255,0.4); color:rgba(255,255,255,0.9); }
-.wsbtn.active { background:white; border-color:white; color:var(--text); font-weight:700; }
-.wsbtn-ikon { font-size:14px; }
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    overflow-y: auto;
+  }
 
-/* ─── MODALS ──────────────────────────────────────────────────────────────── */
-.modal {
-  display: none; position: fixed; inset:0; z-index:1000;
-  background: rgba(0,0,0,0.45); align-items:center; justify-content:center;
-}
-.modal.open { display:flex; }
-.modal-box {
-  background:white; border-radius:var(--radius);
-  width:92%; max-width:600px; max-height:90vh; overflow-y:auto;
-  box-shadow:0 8px 40px rgba(0,0,0,0.2); animation:modalIn 0.2s ease;
-}
-@keyframes modalIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:none} }
-.modal-head { display:flex; justify-content:space-between; align-items:center; padding:1.5rem 1.75rem 1rem; border-bottom:1px solid var(--border); }
-.modal-head h2 { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:700; }
-.modal-body { padding:1.25rem 1.75rem; }
-.modal-foot { display:flex; gap:8px; justify-content:flex-end; padding:1rem 1.75rem 1.5rem; border-top:1px solid var(--border); }
-.close-x { background:none; border:none; font-size:26px; cursor:pointer; color:var(--muted); line-height:1; }
-.close-x:hover { color:var(--text); }
+  .sidebar-logo {
+    padding: 1.4rem 1.25rem 1.2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sidebar-logo-icon {
+    width: 34px; height: 34px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px; font-weight: 800;
+    color: white; flex-shrink: 0;
+  }
+  .sidebar-logo-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px; font-weight: 700;
+    color: var(--white); letter-spacing: 0.5px;
+  }
+  .sidebar-logo-sub {
+    font-size: 10px;
+    color: rgba(255,255,255,0.38);
+    letter-spacing: 0.5px;
+  }
 
-/* ─── FORM ELEMENTS ───────────────────────────────────────────────────────── */
-.form-field { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
-.form-field.last { margin-bottom:0; }
-.form-lbl { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--muted); }
-.form-inp, .form-ta {
-  font-family:'Barlow',sans-serif; font-size:13px; color:var(--text);
-  background:white; border:1px solid var(--border); border-radius:8px;
-  padding:8px 12px; outline:none; transition:border-color 0.2s; width:100%;
-}
-.form-inp:focus, .form-ta:focus { border-color:var(--accent); }
-.form-ta { resize:vertical; min-height:72px; line-height:1.55; }
-.form-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.btn-save   { background:var(--accent); color:white; border:none; padding:9px 20px; border-radius:8px; font-family:'Barlow',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; }
-.btn-save:hover { background:var(--accent-l); }
-.btn-cancel { background:var(--border); color:var(--text); border:none; padding:9px 20px; border-radius:8px; font-family:'Barlow',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; }
-.btn-cancel:hover { background:#d1d5db; }
-.btn-danger { background:var(--accent-pale); color:var(--accent); border:1px solid #fca5a5; padding:9px 20px; border-radius:8px; font-family:'Barlow',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; }
-.btn-danger:hover { background:var(--accent); color:white; }
+  .sidebar-nav { flex: 1; padding: 0.75rem 0; }
 
-/* ROI slider */
-.roi-wrap { display:flex; align-items:center; gap:10px; }
-.roi-slider { flex:1; accent-color:var(--accent); cursor:pointer; }
-.roi-val { font-family:'Barlow Condensed',sans-serif; font-size:17px; font-weight:700; color:var(--accent); min-width:34px; text-align:right; }
+  .nav-section-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: rgba(255,255,255,0.28);
+    padding: 0.9rem 1.25rem 0.35rem;
+  }
 
-/* Horizon slider */
-.hor-wrap { display:flex; flex-direction:column; gap:4px; }
-.hor-slider { width:100%; accent-color:var(--accent); cursor:pointer; }
-.hor-lbls { display:flex; justify-content:space-between; font-size:10px; color:var(--muted); font-weight:600; text-transform:uppercase; }
-.hor-cur  { font-size:12px; font-weight:700; color:var(--accent); text-align:center; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0.6rem 1.25rem;
+    cursor: pointer;
+    color: rgba(255,255,255,0.65);
+    font-size: 13.5px; font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+    user-select: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.07); color: var(--white); }
+  .nav-item.active { background: rgba(255,255,255,0.11); color: var(--white); }
+  .nav-item.active .nav-icon { color: var(--accent); }
+  .nav-item.disabled { opacity: 0.38; cursor: default; pointer-events: none; }
+  .nav-icon { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
 
-/* Circle selector */
-.circle-sel { display:flex; gap:14px; }
-.circle-opt { display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; }
-.circle-opt input[type="radio"] { display:none; }
-.cdot { width:26px; height:26px; border-radius:50%; border:2px solid transparent; transition:all 0.15s; opacity:0.35; }
-.circle-opt input[type="radio"]:checked + .cdot { opacity:1; border-color:#111; transform:scale(1.18); box-shadow:0 2px 8px rgba(0,0,0,0.18); }
-.cdot.g { background:#22c55e; }
-.cdot.y { background:#f59e0b; }
-.cdot.r { background:#ef4444; }
-.clbl { font-size:10px; color:var(--muted); font-weight:600; letter-spacing:0.5px; text-transform:uppercase; }
+  /* Workspace list in sidebar */
+  .sidebar-ws-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0.48rem 1.25rem 0.48rem 2.6rem;
+    cursor: pointer;
+    color: rgba(255,255,255,0.52);
+    font-size: 12.5px;
+    transition: background 0.15s, color 0.15s;
+    user-select: none;
+  }
+  .sidebar-ws-item:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+  .sidebar-ws-item.active { color: var(--accent); font-weight: 600; }
+  .sidebar-ws-icon { font-size: 13px; flex-shrink: 0; }
+  .sidebar-ws-count {
+    margin-left: auto;
+    font-size: 10px;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.45);
+    padding: 1px 6px; border-radius: 10px;
+  }
+  .sidebar-ws-item.active .sidebar-ws-count { background: rgba(218,37,60,0.18); color: var(--accent); }
 
-/* Ikon picker */
-.ikon-picker { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:4px; }
-.ikon-opt {
-  width:34px; height:34px; border-radius:8px; border:1.5px solid var(--border);
-  background:white; font-size:17px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s;
-}
-.ikon-opt:hover { border-color:var(--accent); }
-.ikon-opt.sel   { border-color:var(--accent); background:var(--accent-pale); }
+  .sidebar-add-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0.48rem 1.25rem 0.48rem 2.6rem;
+    cursor: pointer;
+    color: rgba(255,255,255,0.32);
+    font-size: 12px;
+    transition: color 0.15s;
+    background: none; border: none; width: 100%;
+    text-align: left; font-family: 'Barlow', sans-serif;
+  }
+  .sidebar-add-btn:hover { color: var(--accent); }
 
-/* Workspace delete modal */
-#wsDeleteModal .modal-box { max-width:400px; }
-#initDeleteModal .modal-box { max-width:400px; }
+  /* ===== MAIN CONTENT ===== */
+  .main-content {
+    margin-left: var(--sidebar-width);
+    flex: 1; display: flex; flex-direction: column;
+    min-height: 100vh;
+  }
 
-/* ─── MAIN ────────────────────────────────────────────────────────────────── */
-.main { max-width:1200px; margin:1.5rem auto 2rem; padding:0 2rem; }
-.section-title {
-  font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700;
-  letter-spacing:3px; text-transform:uppercase; color:var(--muted);
-  margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid var(--border);
-}
+  /* ===== TOPBAR ===== */
+  .topbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 1rem;
+    position: sticky; top: 0; z-index: 50;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .topbar-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--text); letter-spacing: 0.3px;
+  }
+  .topbar-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
 
-/* ─── WORKSPACE GRID (home view) ───────────────────────────────────��──────── */
-.ws-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; }
-.ws-card {
-  background:white; border-radius:var(--radius); border:1px solid var(--border);
-  box-shadow:var(--shadow); cursor:pointer; transition:all 0.2s;
-  display:flex; flex-direction:column; overflow:hidden; animation:fadeIn 0.3s ease both;
-}
-.ws-card:hover { box-shadow:var(--shadow-h); border-color:#d1d5db; transform:translateY(-2px); }
-.ws-card-top { display:flex; align-items:center; gap:12px; padding:1.25rem 1.25rem 0.9rem; flex:1; }
-.ws-ikon { width:44px; height:44px; border-radius:10px; background:var(--accent-pale); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
-.ws-name { font-family:'Barlow Condensed',sans-serif; font-size:19px; font-weight:700; line-height:1.2; }
-.ws-desc { font-size:12px; color:var(--muted); margin-top:2px; line-height:1.4; }
-.ws-card-foot { display:flex; align-items:center; justify-content:space-between; padding:0.65rem 1.25rem; border-top:1px solid var(--border); background:#fafbfc; }
-.ws-count { font-size:12px; color:var(--muted); }
-.ws-count strong { color:var(--text); font-weight:700; }
-.ws-card-btns { display:flex; gap:4px; }
-.icon-btn {
-  width:28px; height:28px; border-radius:7px; border:1px solid var(--border);
-  background:transparent; cursor:pointer; font-size:13px; color:var(--muted);
-  display:flex; align-items:center; justify-content:center; transition:all 0.15s;
-}
-.icon-btn:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-pale); }
-.ws-add-card {
-  background:transparent; border:2px dashed var(--border); border-radius:var(--radius);
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
-  padding:2.5rem 1rem; cursor:pointer; transition:all 0.2s; color:var(--muted); min-height:140px;
-}
-.ws-add-card:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-pale); }
-.ws-add-icon { font-size:28px; }
-.ws-add-txt  { font-size:13px; font-weight:600; }
+  .btn-primary {
+    background: var(--accent); border: none;
+    color: var(--white); padding: 9px 18px;
+    border-radius: 8px; cursor: pointer;
+    font-size: 13px; font-family: 'Barlow', sans-serif;
+    font-weight: 600; transition: background 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .btn-primary:hover { background: #c01f33; }
 
-/* ─── EMPTY STATES ────────────────────────────────────────────────────────── */
-.empty-state { text-align:center; padding:4rem 2rem; display:flex; flex-direction:column; align-items:center; gap:1rem; }
-.empty-icon  { font-size:52px; }
-.empty-title { font-family:'Barlow Condensed',sans-serif; font-size:24px; font-weight:700; }
-.empty-desc  { font-size:14px; color:var(--muted); max-width:360px; line-height:1.6; }
-.empty-cta   { background:var(--accent); color:white; border:none; padding:10px 22px; border-radius:8px; font-family:'Barlow',sans-serif; font-size:13px; font-weight:600; cursor:pointer; margin-top:0.5rem; transition:all 0.2s; }
-.empty-cta:hover { background:var(--accent-l); }
+  /* ===== PAGE BODY ===== */
+  .page-body { padding: 2rem; flex: 1; }
 
-/* ─── CARDS GRID ──────────────────────────────────────────────────────────── */
-.cards-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
-@media(max-width:780px) { .cards-grid { grid-template-columns:1fr; } }
+  /* ===== DASHBOARD ===== */
+  .dash-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px; margin-bottom: 2rem;
+  }
+  .dash-stat-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  .dsc-icon { font-size: 22px; margin-bottom: 0.4rem; }
+  .dsc-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 34px; font-weight: 700;
+    color: var(--accent); line-height: 1;
+  }
+  .dsc-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-/* ─── TABLE VIEW ──────────────────────────────────────────────────────────── */
-.table-view-container { display:none; }
-.table-view-container.active { display:block; overflow-x:auto; }
-.data-table { width:100%; border-collapse:collapse; background:white; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
-.data-table thead { background:var(--hdr); }
-.data-table th { color:white; padding:0.9rem 1.1rem; text-align:left; font-size:11px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; }
-.data-table td { padding:0.85rem 1.1rem; border-bottom:1px solid var(--border); font-size:13px; vertical-align:middle; }
-.data-table tr:hover { background:#fafbfc; }
-.data-table tr.done { opacity:0.6; background:#f9f9f9; }
+  .dash-section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1rem; padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
 
-/* ─── CARD ────────────────────────────────────────────────────────────────── */
-.card {
-  background:var(--card-bg); border-radius:var(--radius); border:1px solid var(--border);
-  box-shadow:var(--shadow); transition:box-shadow 0.2s, border-color 0.2s;
-  overflow:hidden; position:relative; animation:fadeIn 0.3s ease both;
-}
-.card:hover { box-shadow:var(--shadow-h); border-color:#d1d5db; }
-.card.done  { opacity:0.65; }
-.card.done .card-title { text-decoration:line-through; color:var(--muted); }
-.card.hidden-card { display:none; }
+  .dash-deadline-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 2rem; }
+  .dash-deadline-item {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.75rem 1rem;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: var(--shadow);
+  }
+  .dl-date {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; font-weight: 700;
+    color: var(--accent); white-space: nowrap; min-width: 95px;
+  }
+  .dl-title { font-size: 13px; font-weight: 600; flex: 1; }
+  .dl-ws { font-size: 11px; color: var(--text-muted); }
 
-.card-header {
-  padding:1rem 1.25rem 0.75rem; display:flex; align-items:flex-start; gap:12px;
-  cursor:pointer; user-select:none;
-}
-.card-num {
-  font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:700;
-  background:var(--text); color:white; width:30px; height:30px; border-radius:7px;
-  display:flex; align-items:center; justify-content:center; flex-shrink:0;
-}
-.card.done .card-num { background:var(--done-bg); color:var(--done-txt); }
-.card-header-content { flex:1; min-width:0; }
-.card-title { font-family:'Barlow Condensed',sans-serif; font-size:17px; font-weight:700; line-height:1.2; letter-spacing:0.3px; }
-.card-header-right { display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex-shrink:0; }
-.chevron { font-size:13px; color:var(--muted); transition:transform 0.25s; line-height:1; margin-top:2px; }
-.card.expanded .chevron { transform:rotate(180deg); }
+  /* ===== WORKSPACES OVERVIEW ===== */
+  .ws-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  .ws-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem;
+    box-shadow: var(--shadow); cursor: pointer;
+    transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s;
+  }
+  .ws-card:hover { box-shadow: var(--shadow-hover); border-color: var(--accent); transform: translateY(-2px); }
+  .ws-card-icon { font-size: 30px; margin-bottom: 0.65rem; }
+  .ws-card-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 19px; font-weight: 700;
+    color: var(--text); margin-bottom: 0.25rem;
+  }
+  .ws-card-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.5; min-height: 32px; }
+  .ws-card-meta {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--text-muted);
+    padding-top: 0.75rem; border-top: 1px solid var(--border);
+  }
+  .ws-card-meta strong { color: var(--text); font-size: 14px; }
+  .ws-card.ws-add-card {
+    border: 2px dashed var(--border); background: transparent;
+    box-shadow: none; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; color: var(--text-muted);
+    gap: 8px; min-height: 180px;
+  }
+  .ws-card.ws-add-card:hover { border-color: var(--accent); color: var(--accent); transform: none; box-shadow: none; }
+  .ws-add-plus { font-size: 30px; }
+  .ws-add-label { font-size: 13px; font-weight: 600; }
 
-/* ROI bar */
-.card-roi { padding:0 1.25rem 0.85rem; display:flex; align-items:center; gap:10px; cursor:pointer; }
-.roi-lbl  { font-size:11px; color:var(--muted); font-weight:500; min-width:26px; }
-.roi-track { flex:1; height:4px; background:#e9ecef; border-radius:3px; overflow:hidden; }
-.roi-fill  { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-l)); border-radius:3px; transition:width 0.4s ease; }
-.roi-score { font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700; color:var(--accent); min-width:36px; text-align:right; }
+  /* ===== WORKSPACE DETAIL ===== */
+  .ws-detail-icon-big { font-size: 32px; flex-shrink: 0; }
+  .ws-detail-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px; font-weight: 800; color: var(--text);
+  }
+  .ws-detail-desc { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
 
-/* meta row */
-.card-meta { padding:0 1.25rem 0.85rem; display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
-.meta-badges { display:flex; gap:5px; flex-wrap:wrap; align-items:center; }
-.badge {
-  display:inline-flex; align-items:center; gap:4px;
-  font-size:10px; font-weight:600; padding:2px 8px; border-radius:20px;
-  text-transform:uppercase; letter-spacing:0.5px;
-}
-.badge .dot { width:7px; height:7px; border-radius:50%; display:inline-block; }
-.b-low    { background:var(--low-bg);  color:var(--low-txt); }
-.b-mid    { background:var(--mid-bg);  color:var(--mid-txt); }
-.b-high   { background:var(--high-bg); color:var(--high-txt); }
-.b-done   { background:var(--done-bg); color:var(--done-txt); }
-.b-ongoing{ background:var(--on-bg);   color:var(--on-txt); }
-.meta-txt  { font-size:11px; color:var(--muted); }
-.meta-txt.near { color:var(--accent); font-weight:700; }
-.card-actions { display:flex; gap:5px; }
-.action-btn {
-  width:28px; height:28px; border-radius:7px; border:1px solid var(--border);
-  background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center;
-  font-size:13px; transition:all 0.15s; color:var(--muted);
-}
-.action-btn:hover { background:var(--bg); border-color:var(--accent); color:var(--accent); }
-.action-btn.done-btn:hover  { background:var(--low-bg);  border-color:var(--low-txt);  color:var(--low-txt); }
-.action-btn.del-btn:hover   { background:var(--accent-pale); border-color:var(--accent); color:var(--accent); }
+  /* ===== DETAIL TOOLBAR ===== */
+  .detail-toolbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0.65rem 2rem;
+    display: flex; align-items: center;
+    gap: 10px; flex-wrap: wrap;
+  }
 
-/* expanded body */
-.card-body {
-  display:none; padding:0 1.25rem 1.25rem;
-  border-top:1px solid var(--border); background:#fafbfc;
-}
-.card.expanded .card-body { display:block; animation:slideDown 0.2s ease; }
-.short-desc { font-size:13px; color:var(--muted); padding:1rem 0 0.75rem; font-style:italic; border-bottom:1px dashed var(--border); margin-bottom:0.75rem; }
-.detail-text { font-size:13.5px; line-height:1.75; color:var(--text); margin-bottom:1rem; }
-.impact-block { background:var(--accent-pale); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:0.75rem 1rem; font-size:12.5px; color:var(--text); line-height:1.6; }
-.impact-lbl { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:4px; }
+  .view-switcher {
+    display: flex; gap: 3px;
+    background: var(--gray-light);
+    padding: 3px; border-radius: 8px;
+    margin-right: auto;
+  }
+  .vs-btn {
+    padding: 5px 14px; border-radius: 6px;
+    border: none; background: transparent;
+    color: var(--text-muted);
+    cursor: pointer; font-size: 12px;
+    font-family: 'Barlow', sans-serif; font-weight: 600;
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .vs-btn:hover { color: var(--text); }
+  .vs-btn.active { background: var(--white); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
 
-/* edit mode inside card */
-.edit-section { display:none; margin-top:1rem; padding-top:1rem; border-top:1px dashed var(--accent); }
-.card.edit-mode .edit-section { display:block; }
-.card.edit-mode .view-section { display:none; }
-.edit-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
-.edit-field { display:flex; flex-direction:column; gap:4px; }
-.edit-lbl { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); }
-.edit-inp, .edit-ta {
-  font-family:'Barlow',sans-serif; font-size:13px; color:var(--text);
-  background:white; border:1px solid var(--border); border-radius:8px;
-  padding:7px 10px; outline:none; transition:border-color 0.15s; width:100%;
-}
-.edit-inp:focus, .edit-ta:focus { border-color:var(--accent); }
-.edit-ta { resize:vertical; min-height:72px; line-height:1.6; }
-.edit-full { grid-column:1/-1; }
-.edit-save-btn {
-  margin-top:8px; background:var(--accent); color:white; border:none;
-  padding:8px 20px; border-radius:8px; font-family:'Barlow',sans-serif;
-  font-size:13px; font-weight:600; cursor:pointer; transition:background 0.15s;
-}
-.edit-save-btn:hover { background:var(--accent-l); }
+  /* ===== FILTER ROW ===== */
+  .detail-filter-row {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 2rem;
+    display: flex; align-items: center;
+    gap: 10px; flex-wrap: wrap;
+  }
+  .fp-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--text-muted); white-space: nowrap;
+  }
+  .fp-group { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .fp-btn {
+    padding: 4px 10px; border-radius: 20px;
+    border: 1px solid var(--border); background: var(--white);
+    color: var(--text-muted); cursor: pointer;
+    font-size: 11px; font-family: 'Barlow', sans-serif;
+    font-weight: 500; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .fp-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .fp-btn.active { background: var(--accent); border-color: var(--accent); color: var(--white); font-weight: 700; }
+  .fp-sep { width: 1px; height: 18px; background: var(--border); flex-shrink: 0; }
 
-/* done section */
-.done-section { margin-top:2.5rem; }
-.done-section .section-title { color:#bbb; }
-.done-section .cards-grid { opacity:0.7; }
+  .circle-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.1); }
+  .circle-dot.green  { background: #27AE60; }
+  .circle-dot.yellow { background: #F1C40F; }
+  .circle-dot.red    { background: var(--accent); }
 
-/* ─── TIMELINE MODAL ──────────────────────────────────────────────────────── */
-.tl-modal {
-  display:none; position:fixed; inset:0; z-index:2000;
-  background:rgba(0,0,0,0.5); overflow-y:auto;
-}
-.tl-modal.open { display:block; }
-.tl-content { background:white; margin:40px auto; padding:2rem; border-radius:var(--radius); width:90%; max-width:960px; box-shadow:0 4px 30px rgba(0,0,0,0.25); }
-.tl-header  { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; border-bottom:1px solid var(--border); padding-bottom:1rem; flex-wrap:wrap; gap:1rem; }
-.tl-header h2 { font-family:'Barlow Condensed',sans-serif; font-size:26px; font-weight:700; }
-.tl-close { background:none; border:none; font-size:28px; cursor:pointer; color:var(--muted); }
-.tl-close:hover { color:var(--text); }
+  .sort-select {
+    background: var(--white); border: 1px solid var(--border);
+    color: var(--text); padding: 4px 10px;
+    border-radius: 8px; font-size: 11px;
+    font-family: 'Barlow', sans-serif; cursor: pointer; outline: none;
+  }
+  .sort-select:focus { border-color: var(--accent); }
+  .btn-reset-filters {
+    background: var(--gray-light); border: 1px solid var(--border);
+    color: var(--text-muted); padding: 4px 12px;
+    border-radius: 20px; cursor: pointer;
+    font-size: 11px; font-family: 'Barlow', sans-serif;
+    font-weight: 500; transition: all 0.2s; margin-left: auto;
+  }
+  .btn-reset-filters:hover { background: var(--accent); border-color: var(--accent); color: var(--white); }
 
-/* timeline filters */
-.tl-filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid var(--border); }
-.tl-fg { display:flex; gap:4px; flex-wrap:wrap; align-items:center; }
-.tl-flbl { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-right:4px; }
-.tlchip {
-  padding:4px 10px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--muted);
-  cursor:pointer; font-size:11px; font-family:'Barlow',sans-serif; font-weight:500; transition:all 0.15s;
-  display:inline-flex; align-items:center; gap:4px;
-}
-.tlchip:hover { border-color:var(--accent); color:var(--accent); }
-.tlchip.active { background:var(--accent); border-color:var(--accent); color:white; }
-.tlchip .dot { width:7px; height:7px; border-radius:50%; display:inline-block; }
+  /* ===== LIST VIEW ===== */
+  .list-view { padding: 1.5rem 2rem; }
+  .data-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--white); border-radius: var(--radius);
+    overflow: hidden; box-shadow: var(--shadow);
+  }
+  .data-table thead { background: #2a2a2a; }
+  .data-table th {
+    color: var(--white); padding: 0.9rem 1rem;
+    text-align: left; font-weight: 700;
+    font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .data-table th:first-child { color: var(--accent); }
+  .data-table td { padding: 0.8rem 1rem; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:hover td { background: #fafafa; }
+  .data-table tr.status-afsluttet td { opacity: 0.6; }
 
-.tl-track { position:relative; padding:2rem 0; }
-.tl-line  { position:absolute; left:50%; top:0; bottom:0; width:3px; background:var(--border); transform:translateX(-50%); }
-.tl-items { display:flex; flex-direction:column; gap:2.5rem; }
-.tl-item  { position:relative; display:flex; gap:2rem; }
-.tl-item.left  { flex-direction:row; }
-.tl-item.right { flex-direction:row-reverse; }
-.tl-marker { position:absolute; left:50%; top:6px; width:18px; height:18px; background:var(--accent); border:3px solid white; border-radius:50%; transform:translateX(-50%); z-index:10; }
-.tl-box {
-  flex:1; padding:1.25rem; background:#fafbfc; border-radius:8px; border:1px solid var(--border);
-  margin-right:calc(50% + 16px);
-}
-.tl-item.right .tl-box { margin-right:0; margin-left:calc(50% + 16px); }
-.tl-box h3 { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:700; margin-bottom:4px; }
-.tl-box p  { font-size:12px; color:var(--muted); line-height:1.5; }
-.tl-period { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--accent); margin-bottom:4px; }
-.tl-badges { display:flex; gap:5px; flex-wrap:wrap; margin-top:6px; }
+  /* ===== KANBAN VIEW ===== */
+  .kanban-view { padding: 1.5rem 2rem; overflow-x: auto; }
+  .kanban-board { display: flex; gap: 14px; min-width: max-content; }
+  .kanban-col { width: 272px; flex-shrink: 0; display: flex; flex-direction: column; }
+  .kanban-col-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0.7rem 1rem;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) 0 0;
+    border-bottom: none;
+  }
+  .kanban-col-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.5px; text-transform: uppercase; color: var(--text);
+  }
+  .kanban-col-count {
+    margin-left: auto;
+    background: var(--gray-light); color: var(--text-muted);
+    font-size: 11px; font-weight: 700;
+    padding: 2px 7px; border-radius: 10px;
+  }
+  .kanban-col-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .dot-ide       { background: #a0aec0; }
+  .dot-planlagt  { background: #63b3ed; }
+  .dot-igang     { background: #f6ad55; }
+  .dot-afsluttet { background: #68d391; }
 
-/* ─── FOOTER ──────────────────────────────────────────────────────────────── */
-footer { background:var(--hdr); color:rgba(255,255,255,0.35); font-size:11px; padding:1.5rem 2rem; text-align:center; line-height:2; margin-top:2rem; }
-footer strong { color:rgba(255,255,255,0.6); }
+  .kanban-col-body {
+    background: var(--gray-light);
+    border: 1px solid var(--border);
+    border-radius: 0 0 var(--radius) var(--radius);
+    padding: 8px; display: flex; flex-direction: column;
+    gap: 8px; min-height: 120px; flex: 1;
+  }
+  .kanban-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.8rem 0.9rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    transition: box-shadow 0.15s;
+  }
+  .kanban-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+  .kc-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+  .kc-badges { display: flex; flex-wrap: wrap; gap: 4px; }
+  .kc-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 6px; margin-top: 8px; padding-top: 6px;
+    border-top: 1px solid var(--border);
+  }
+  .kc-roi { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+  .roi-mini-track { width: 44px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .roi-mini-fill { height: 100%; background: var(--accent); border-radius: 2px; }
+  .kc-actions { display: flex; gap: 4px; }
+  .kc-action-btn {
+    width: 24px; height: 24px; border-radius: 6px;
+    border: 1px solid var(--border); background: transparent;
+    cursor: pointer; display: flex; align-items: center;
+    justify-content: center; font-size: 11px;
+    color: var(--text-muted); transition: all 0.15s;
+  }
+  .kc-action-btn:hover { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+  .kanban-empty { text-align: center; padding: 1.5rem 1rem; color: var(--text-muted); font-size: 12px; }
 
-/* ─── ANIMATIONS ──────────────────────────────────────────────────────────── */
-.card { animation:fadeIn 0.3s ease both; }
-@keyframes fadeIn  { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
-@keyframes slideDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:none} }
+  /* ===== TIMELINE VIEW ===== */
+  .timeline-view { padding: 1.5rem 2rem; }
+  .timeline-track { position: relative; padding: 1rem 0; }
+  .timeline-line {
+    position: absolute; left: 50%; top: 0; bottom: 0;
+    width: 3px; background: var(--border); transform: translateX(-50%);
+  }
+  .timeline-items { display: flex; flex-direction: column; gap: 2.5rem; }
+  .timeline-item { position: relative; display: flex; gap: 2rem; }
+  .timeline-item.t-left  { flex-direction: row; }
+  .timeline-item.t-right { flex-direction: row-reverse; }
+  .timeline-marker {
+    position: absolute; left: 50%; top: 0;
+    width: 18px; height: 18px;
+    background: var(--accent); border: 3px solid var(--bg);
+    border-radius: 50%; transform: translateX(-50%); z-index: 10;
+  }
+  .timeline-box {
+    flex: 1; padding: 1.2rem 1.4rem;
+    background: var(--white); border-radius: 8px;
+    border: 1px solid var(--border); box-shadow: var(--shadow);
+  }
+  .timeline-period {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 4px;
+  }
+  .timeline-box h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--text);
+  }
+  .timeline-box p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+  .timeline-empty { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 14px; }
 
-/* ─── RESPONSIVE ──────────────────────────────────────────────────────────── */
-@media(max-width:768px){
-  .tl-line,.tl-marker { left:20px; }
-  .tl-item { flex-direction:column!important; margin-left:46px; }
-  .tl-box  { margin:0!important; }
-  .filter-row { flex-direction:column; align-items:flex-start; }
-}
-@media(max-width:600px){
-  .dashboard { grid-template-columns:repeat(2,1fr); }
-  header,.filter-panel,.main { padding-left:1rem; padding-right:1rem; }
-  .ws-bar { padding-left:1rem; padding-right:1rem; }
-  .header-main { font-size:26px; }
-  .edit-grid,.form-grid2 { grid-template-columns:1fr; }
-  .modal-box { max-width:95%; margin:1rem; }
-}
+  /* ===== BADGES ===== */
+  .impl-badge {
+    font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 0.3px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .badge-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .badge-dot.green  { background: #27AE60; }
+  .badge-dot.yellow { background: #F1C40F; }
+  .badge-dot.red    { background: var(--accent); }
+  .impl-low  { background: #EAF3DE; color: #3B6D11; }
+  .impl-mid  { background: #FFF3E0; color: #854F0B; }
+  .impl-high { background: var(--accent-pale); color: var(--accent); }
+  .horizon-badge  { background: var(--gray-light); color: var(--text-muted); }
+  .deadline-badge { background: #f0eafd; color: #5e35b1; }
+
+  .status-badge {
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 20px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .status-ide       { background: #edf2f7; color: #718096; }
+  .status-planlagt  { background: #ebf8ff; color: #2b6cb0; }
+  .status-igang     { background: #fffaf0; color: #c05621; }
+  .status-afsluttet { background: #f0fff4; color: #276749; }
+
+  .action-btn {
+    width: 26px; height: 26px; border-radius: 7px;
+    border: 1px solid var(--border); background: transparent;
+    cursor: pointer; display: inline-flex; align-items: center;
+    justify-content: center; font-size: 12px;
+    transition: all 0.15s; color: var(--text-muted);
+  }
+  .action-btn:hover { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 14px; }
+
+  /* ===== MODALS ===== */
+  .modal {
+    display: none; position: fixed; z-index: 1000;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.45);
+  }
+  .modal-content {
+    background: var(--card-bg);
+    margin: 4% auto; padding: 2rem;
+    border-radius: var(--radius);
+    width: 90%; max-width: 640px;
+    max-height: 88vh; overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .modal-content.modal-sm { max-width: 420px; }
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;
+  }
+  .modal-header h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: 0.5px;
+  }
+  .close-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: var(--text-muted); }
+  .close-btn:hover { color: var(--text); }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
+  .form-field.full { grid-column: 1 / -1; }
+  .form-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
+  .form-input, .form-select, .form-textarea {
+    font-family: 'Barlow', sans-serif; font-size: 13px;
+    color: var(--text); background: var(--white);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 12px; outline: none; transition: border-color 0.2s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+  .form-checkboxes { display: flex; gap: 16px; flex-wrap: wrap; }
+  .form-checkbox { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .form-checkbox input { cursor: pointer; accent-color: var(--accent); }
+  .form-checkbox label { cursor: pointer; font-size: 13px; }
+
+  /* Circle selector */
+  .circle-selector { display: flex; gap: 8px; flex-wrap: wrap; }
+  .circ-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 20px;
+    border: 1.5px solid var(--border); background: var(--white);
+    cursor: pointer; font-size: 12px;
+    font-family: 'Barlow', sans-serif; font-weight: 500;
+    color: var(--text-muted); transition: all 0.18s;
+  }
+  .circ-btn .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.1); }
+  .circ-btn.green  .dot { background: #27AE60; }
+  .circ-btn.yellow .dot { background: #F1C40F; }
+  .circ-btn.red    .dot { background: var(--accent); }
+  .circ-btn.green.selected  { border-color: #27AE60; background: #f0faf5; color: #1a6b3e; font-weight: 700; }
+  .circ-btn.yellow.selected { border-color: #d4a800; background: #fffbec; color: #7a5f00; font-weight: 700; }
+  .circ-btn.red.selected    { border-color: var(--accent); background: var(--accent-pale); color: var(--accent); font-weight: 700; }
+
+  /* Horizon slider */
+  .slider-wrap { display: flex; align-items: center; gap: 12px; }
+  .horizon-slider { flex: 1; accent-color: var(--accent); cursor: pointer; }
+  .horizon-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px; font-weight: 700; color: var(--accent);
+    min-width: 64px; text-transform: uppercase;
+  }
+  .slider-ticks { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 2px; padding: 0 2px; }
+
+  .modal-actions { display: flex; gap: 10px; margin-top: 1.5rem; justify-content: flex-end; }
+  .modal-actions button {
+    padding: 10px 20px; border-radius: 8px; border: none;
+    font-family: 'Barlow', sans-serif; font-size: 13px;
+    font-weight: 600; cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  .btn-save   { background: var(--accent); color: var(--white); }
+  .btn-save:hover { background: #c01f33; }
+  .btn-cancel { background: var(--gray-light); color: var(--text); border: 1px solid var(--border) !important; }
+  .btn-cancel:hover { background: var(--border); }
+
+  /* Animations */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .ws-card, .dash-stat-card, .kanban-card, .timeline-box, .dash-deadline-item { animation: fadeIn 0.25s ease both; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) { :root { --sidebar-width: 200px; } }
+  @media (max-width: 680px) {
+    .sidebar { display: none; }
+    .main-content { margin-left: 0; }
+    .kanban-board { flex-direction: column; }
+    .kanban-col { width: 100%; }
+    .timeline-line { left: 22px; }
+    .timeline-marker { left: 22px; }
+    .timeline-item { flex-direction: column !important; margin-left: 46px; }
+    .form-grid { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════ HEADER ════════════════════════════════════════════════ -->
-<header>
-  <div class="header-top">
-    <div>
-      <div class="header-title">Prosliding.dk</div>
-      <div class="header-main">Initiativer</div>
-      <div class="header-sub" id="header-sub">Vælg et arbejdsområde nedenfor</div>
+<div class="app-layout">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">S</div>
+      <div>
+        <div class="sidebar-logo-text">Skeleton</div>
+        <div class="sidebar-logo-sub">Initiativstyring</div>
+      </div>
     </div>
-    <div class="header-actions">
-      <button class="btn-new" id="btn-new-ws"  onclick="openWsModal()">＋ Arbejdsområde</button>
-      <button class="btn-new" id="btn-new-init" onclick="openInitModal()" style="display:none">＋ Initiativ</button>
-    </div>
-  </div>
 
-  <div class="dashboard" id="dashboard">
-    <div class="dash-card"><div class="dash-label">Arbejdsområder</div><div class="dash-value" id="d-ws">—</div><div class="dash-sub">i alt</div></div>
-    <div class="dash-card"><div class="dash-label">Aktive</div><div class="dash-value" id="d-active">—</div><div class="dash-sub">initiativer</div></div>
-    <div class="dash-card"><div class="dash-label">Budget</div><div class="dash-value" id="d-cost">—</div><div class="dash-sub">kr estimeret</div></div>
-    <div class="dash-card"><div class="dash-label">Gns. ROI</div><div class="dash-value" id="d-roi">—</div><div class="dash-sub">ud af 10</div></div>
-  </div>
-</header>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Navigation</div>
 
-<!-- WORKSPACE SELECTION BAR -->
-<div class="ws-bar" id="ws-bar">
-  <div class="ws-bar-inner" id="ws-bar-inner">
-    <span class="ws-bar-lbl">Område</span>
-    <!-- filled by JS -->
-  </div>
-</div>
+      <div class="nav-item active" id="nav-dashboard" onclick="navigate('dashboard')">
+        <span class="nav-icon">&#x1F4CA;</span>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item" id="nav-workspaces" onclick="navigate('workspaces')">
+        <span class="nav-icon">&#x1F4C1;</span>
+        <span>Arbejdsområder</span>
+      </div>
 
-<!-- FILTER PANEL -->
-<div class="filter-panel" id="filter-panel" style="display:none">
-  <div class="filter-panel-inner">
+      <!-- Dynamic workspace list injected by JS -->
+      <div id="sidebar-ws-list"></div>
 
-    <div class="filter-row">
-      <span class="filter-row-lbl">Visning</span>
-      <div class="fchips">
-        <div class="view-chips">
-          <button class="vchip active" id="vbtn-card"     onclick="setView('card')">🃏 Kort</button>
-          <button class="vchip"        id="vbtn-table"    onclick="setView('table')">📊 Tabel</button>
-          <button class="vchip"        id="vbtn-timeline" onclick="openTimeline()">📅 Tidslinje</button>
+      <button class="sidebar-add-btn" onclick="openNewWorkspaceModal()">
+        <span>+</span>
+        <span>Nyt arbejdsområde</span>
+      </button>
+
+      <div style="margin-top:2rem;">
+        <div class="nav-section-label">System</div>
+        <div class="nav-item disabled">
+          <span class="nav-icon">&#x2699;&#xFE0F;</span>
+          <span>Indstillinger</span>
         </div>
       </div>
-      <select class="sort-sel" id="sort-select" onchange="renderAll()">
-        <option value="default">Standard (#)</option>
-        <option value="roi">ROI (høj → lav)</option>
-        <option value="cost">Pris (lav → høj)</option>
-        <option value="deadline">Deadline (tidligst)</option>
-        <option value="horizon">Horisont (kort → lang)</option>
-      </select>
-    </div>
+    </nav>
+  </aside>
 
-    <div class="filter-row">
-      <span class="filter-row-lbl">Status</span>
-      <div class="fchips" id="f-status">
-        <button class="fchip active" data-val="all">Alle</button>
-        <button class="fchip" data-val="ongoing">Igangværende</button>
-        <button class="fchip" data-val="done">Afsluttet</button>
-      </div>
-    </div>
-
-    <div class="filter-row">
-      <span class="filter-row-lbl">Vanskelighed</span>
-      <div class="fchips" id="f-diff">
-        <button class="fchip active" data-val="all">Alle</button>
-        <button class="fchip" data-val="low"><span class="dot" style="background:#22c55e;width:8px;height:8px;border-radius:50%;display:inline-block;"></span>Lav</button>
-        <button class="fchip" data-val="mid"><span class="dot" style="background:#f59e0b;width:8px;height:8px;border-radius:50%;display:inline-block;"></span>Middel</button>
-        <button class="fchip" data-val="high"><span class="dot" style="background:#ef4444;width:8px;height:8px;border-radius:50%;display:inline-block;"></span>Høj</button>
-      </div>
-    </div>
-
-    <div class="filter-row">
-      <span class="filter-row-lbl">Effekt</span>
-      <div class="fchips" id="f-effect">
-        <button class="fchip active" data-val="all">Alle</button>
-        <button class="fchip" data-val="low"><span class="dot" style="background:#22c55e;width:8px;height:8px;border-radius:50%;display:inline-block;"></span>Lav</button>
-        <button class="fchip" data-val="mid"><span class="dot" style="background:#f59e0b;width:8px;height:8px;border-radius:50%;display:inline-block;"></span>Middel</button>
-        <button class="fchip" data-val="high"><span class="dot" style="background:#ef4444;width:8px;height:8px;border-radius:50%;display:inline-block;"></span>Høj</button>
-      </div>
-    </div>
-
-    <div class="filter-row">
-      <span class="filter-row-lbl">Horisont</span>
-      <div class="fchips" id="f-horizon">
-        <button class="fchip active" data-val="all">Alle</button>
-        <button class="fchip" data-val="0">Dage</button>
-        <button class="fchip" data-val="1">Uger</button>
-        <button class="fchip" data-val="2">Måneder</button>
-        <button class="fchip" data-val="3">År</button>
-      </div>
-    </div>
-
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="main-content" id="main-content">
+    <!-- Rendered dynamically by JS -->
   </div>
-</div>
 
-<!-- ═══════════════════ MAIN ══════════════════════════════════════════════════ -->
-<div class="main" id="main-content">
-  <!-- rendered by JS -->
-</div>
+</div><!-- end .app-layout -->
 
-<!-- ═══════════════════ TIMELINE MODAL ════════════════════════════════════════ -->
-<div class="tl-modal" id="timelineModal">
-  <div class="tl-content">
-    <div class="tl-header">
-      <h2>📅 Implementeringstidslinje</h2>
-      <button class="tl-close" onclick="closeTimeline()">×</button>
+<!-- ===== MODAL: NYT ARBEJDSOMRADE ===== -->
+<div id="newWorkspaceModal" class="modal">
+  <div class="modal-content modal-sm">
+    <div class="modal-header">
+      <h2>Nyt arbejdsområde</h2>
+      <button class="close-btn" onclick="closeNewWorkspaceModal()">&#x00D7;</button>
     </div>
-    <div class="tl-filters">
-      <div class="tl-fg">
-        <span class="tl-flbl">Status</span>
-        <button class="tlchip active" data-tl="status" data-val="all">Alle</button>
-        <button class="tlchip" data-tl="status" data-val="ongoing">Igangværende</button>
-        <button class="tlchip" data-tl="status" data-val="done">Afsluttet</button>
+    <div class="form-grid">
+      <div class="form-field full">
+        <label class="form-label">Ikon (emoji)</label>
+        <input class="form-input" id="wsIcon" type="text" maxlength="4" value="📋" placeholder="📋">
       </div>
-      <div class="tl-fg">
-        <span class="tl-flbl">Horisont</span>
-        <button class="tlchip active" data-tl="horizon" data-val="all">Alle</button>
-        <button class="tlchip" data-tl="horizon" data-val="0">Dage</button>
-        <button class="tlchip" data-tl="horizon" data-val="1">Uger</button>
-        <button class="tlchip" data-tl="horizon" data-val="2">Måneder</button>
-        <button class="tlchip" data-tl="horizon" data-val="3">År</button>
+      <div class="form-field full">
+        <label class="form-label">Navn</label>
+        <input class="form-input" id="wsName" type="text" placeholder="Fx Sponsortiltrækning">
       </div>
-      <div class="tl-fg">
-        <span class="tl-flbl">Vanskelighed</span>
-        <button class="tlchip active" data-tl="diff" data-val="all">Alle</button>
-        <button class="tlchip" data-tl="diff" data-val="low"><span class="dot" style="background:#22c55e"></span>Lav</button>
-        <button class="tlchip" data-tl="diff" data-val="mid"><span class="dot" style="background:#f59e0b"></span>Middel</button>
-        <button class="tlchip" data-tl="diff" data-val="high"><span class="dot" style="background:#ef4444"></span>Høj</button>
-      </div>
-      <div class="tl-fg">
-        <span class="tl-flbl">Effekt</span>
-        <button class="tlchip active" data-tl="effect" data-val="all">Alle</button>
-        <button class="tlchip" data-tl="effect" data-val="low"><span class="dot" style="background:#22c55e"></span>Lav</button>
-        <button class="tlchip" data-tl="effect" data-val="mid"><span class="dot" style="background:#f59e0b"></span>Middel</button>
-        <button class="tlchip" data-tl="effect" data-val="high"><span class="dot" style="background:#ef4444"></span>Høj</button>
+      <div class="form-field full">
+        <label class="form-label">Beskrivelse</label>
+        <textarea class="form-textarea" id="wsDesc" placeholder="Hvad handler dette arbejdsområde om?"></textarea>
       </div>
     </div>
-    <div class="tl-track">
-      <div class="tl-line"></div>
-      <div class="tl-items" id="tl-items"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeNewWorkspaceModal()">Annuller</button>
+      <button class="btn-save" onclick="saveNewWorkspace()">Opret</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════ WORKSPACE MODAL ═══════════════════════════════════════ -->
-<div class="modal" id="wsModal">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h2 id="ws-modal-title">Nyt arbejdsområde</h2>
-      <button class="close-x" onclick="closeModal('wsModal')">×</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-field">
-        <label class="form-lbl">Ikon</label>
-        <div class="ikon-picker" id="ikon-picker"></div>
-      </div>
-      <div class="form-field">
-        <label class="form-lbl">Navn *</label>
-        <input class="form-inp" id="ws-navn" placeholder="fx Hjemmeside, Sociale medier…" maxlength="60">
-      </div>
-      <div class="form-field last">
-        <label class="form-lbl">Beskrivelse</label>
-        <textarea class="form-ta" id="ws-desc" placeholder="Hvad handler dette område om?" rows="2"></textarea>
-      </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn-cancel" onclick="closeModal('wsModal')">Annuller</button>
-      <button class="btn-save"   onclick="saveWorkspace()">Gem</button>
-    </div>
-  </div>
-</div>
-
-<!-- WORKSPACE DELETE CONFIRM -->
-<div class="modal" id="wsDeleteModal">
-  <div class="modal-box" style="max-width:400px">
-    <div class="modal-head">
-      <h2>Slet arbejdsområde?</h2>
-      <button class="close-x" onclick="closeModal('wsDeleteModal')">×</button>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:14px;line-height:1.6;color:var(--muted)">
-        "<strong id="ws-delete-name" style="color:var(--text)"></strong>" og alle tilhørende initiativer slettes permanent. Dette kan ikke fortrydes.
-      </p>
-    </div>
-    <div class="modal-foot">
-      <button class="btn-cancel" onclick="closeModal('wsDeleteModal')">Annuller</button>
-      <button class="btn-danger" onclick="confirmDeleteWs()">Slet permanent</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════ INITIATIVE MODAL ══════════════════════════════════════ -->
-<div class="modal" id="initModal">
-  <div class="modal-box">
-    <div class="modal-head">
+<!-- ===== MODAL: NYT INITIATIV ===== -->
+<div id="newInitiativeModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
       <h2>Nyt initiativ</h2>
-      <button class="close-x" onclick="closeModal('initModal')">×</button>
+      <button class="close-btn" onclick="closeNewInitiativeModal()">&#x00D7;</button>
     </div>
-    <div class="modal-body">
-      <div class="form-field">
-        <label class="form-lbl">Titel *</label>
-        <input class="form-inp" id="init-titel" placeholder="Hvad skal der gøres?">
+    <div class="form-grid">
+      <div class="form-field full">
+        <label class="form-label">Titel</label>
+        <input class="form-input" id="initTitle" type="text" placeholder="Eksempel: Stat-bar med live resultater">
       </div>
-      <div class="form-field">
-        <label class="form-lbl">Kort beskrivelse</label>
-        <input class="form-inp" id="init-kort" placeholder="Én linje opsummering…">
+      <div class="form-field full">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="initStatus">
+          <option value="ide">Idé</option>
+          <option value="planlagt">Planlagt</option>
+          <option value="igang">Igang</option>
+          <option value="afsluttet">Afsluttet</option>
+        </select>
       </div>
-      <div class="form-field">
-        <label class="form-lbl">Detaljer</label>
-        <textarea class="form-ta" id="init-detaljer" placeholder="Uddybende beskrivelse…"></textarea>
-      </div>
-      <div class="form-field">
-        <label class="form-lbl">Forventet effekt</label>
-        <textarea class="form-ta" id="init-effekt" placeholder="Hvad opnår vi?" rows="2"></textarea>
-      </div>
-      <div class="form-grid2">
-        <div class="form-field">
-          <label class="form-lbl">Estimeret pris (kr)</label>
-          <input class="form-inp" type="number" id="init-cost" placeholder="0">
-        </div>
-        <div class="form-field">
-          <label class="form-lbl">Deadline</label>
-          <input class="form-inp" type="date" id="init-deadline">
-        </div>
-      </div>
-      <div class="form-field">
-        <label class="form-lbl">ROI-indeks (0–10)</label>
-        <div class="roi-wrap">
-          <input type="range" class="roi-slider" id="init-roi" min="0" max="10" step="0.5" value="5"
-            oninput="document.getElementById('init-roi-val').textContent=this.value">
-          <span class="roi-val" id="init-roi-val">5</span>
-        </div>
-      </div>
-      <div class="form-field">
-        <label class="form-lbl">Tidshorisont for implementering</label>
-        <div class="hor-wrap">
-          <input type="range" class="hor-slider" id="init-hor" min="0" max="3" step="1" value="1"
-            oninput="setHorLbl('init-hor-lbl', this.value)">
-          <div class="hor-lbls"><span>Dage</span><span>Uger</span><span>Måneder</span><span>År</span></div>
-          <div class="hor-cur" id="init-hor-lbl">Uger</div>
-        </div>
-      </div>
-      <div class="form-grid2">
-        <div class="form-field">
-          <label class="form-lbl">Vanskelighed</label>
-          <div class="circle-sel">
-            <label class="circle-opt"><input type="radio" name="init-diff" value="low" checked><div class="cdot g"></div><span class="clbl">Lav</span></label>
-            <label class="circle-opt"><input type="radio" name="init-diff" value="mid"><div class="cdot y"></div><span class="clbl">Middel</span></label>
-            <label class="circle-opt"><input type="radio" name="init-diff" value="high"><div class="cdot r"></div><span class="clbl">Høj</span></label>
+      <div class="form-field full">
+        <label class="form-label">Målgruppe</label>
+        <div class="form-checkboxes">
+          <div class="form-checkbox">
+            <input type="checkbox" id="initAudSponsor" value="sponsor">
+            <label for="initAudSponsor">Sponsor</label>
           </div>
-        </div>
-        <div class="form-field">
-          <label class="form-lbl">Estimeret effekt</label>
-          <div class="circle-sel">
-            <label class="circle-opt"><input type="radio" name="init-effect" value="low"><div class="cdot g"></div><span class="clbl">Lav</span></label>
-            <label class="circle-opt"><input type="radio" name="init-effect" value="mid" checked><div class="cdot y"></div><span class="clbl">Middel</span></label>
-            <label class="circle-opt"><input type="radio" name="init-effect" value="high"><div class="cdot r"></div><span class="clbl">Høj</span></label>
+          <div class="form-checkbox">
+            <input type="checkbox" id="initAudFan" value="fan">
+            <label for="initAudFan">Fan</label>
+          </div>
+          <div class="form-checkbox">
+            <input type="checkbox" id="initAudFrivillig" value="frivillig">
+            <label for="initAudFrivillig">Frivillig</label>
           </div>
         </div>
       </div>
+      <div class="form-field full">
+        <label class="form-label">Kort beskrivelse</label>
+        <input class="form-input" id="initShortDesc" type="text" placeholder="En linje beskrivelse">
+      </div>
+      <div class="form-field full">
+        <label class="form-label">Detaljer</label>
+        <textarea class="form-textarea" id="initDetails" placeholder="Fuldstændig beskrivelse..."></textarea>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Påvirkning</label>
+        <input class="form-input" id="initImpact" type="text" placeholder="Eksempel: Højere engagement">
+      </div>
+      <div class="form-field">
+        <label class="form-label">ROI (0–10)</label>
+        <input class="form-input" id="initROI" type="number" min="0" max="10" placeholder="7">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Estimeret pris (DKK)</label>
+        <input class="form-input" id="initCost" type="number" min="0" placeholder="5000">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Deadline</label>
+        <input class="form-input" id="initDeadline" type="date">
+      </div>
+      <div class="form-field full">
+        <label class="form-label">Tidshorisont</label>
+        <div class="slider-wrap">
+          <input type="range" class="horizon-slider" id="initTimeHorizon" min="0" max="3" step="1" value="1">
+          <span class="horizon-label" id="initTimeHorizonLabel">Uger</span>
+        </div>
+        <div class="slider-ticks">
+          <span>Dage</span><span>Uger</span><span>Måneder</span><span>År</span>
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Vanskelighed</label>
+        <div class="circle-selector" id="initImplCircles">
+          <button type="button" class="circ-btn green selected" data-val="lav"><span class="dot"></span>Lav</button>
+          <button type="button" class="circ-btn yellow" data-val="middel"><span class="dot"></span>Middel</button>
+          <button type="button" class="circ-btn red" data-val="høj"><span class="dot"></span>Høj</button>
+        </div>
+        <input type="hidden" id="initImpl" value="lav">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Estimeret effekt</label>
+        <div class="circle-selector" id="initEffectCircles">
+          <button type="button" class="circ-btn green selected" data-val="lav"><span class="dot"></span>Lav</button>
+          <button type="button" class="circ-btn yellow" data-val="middel"><span class="dot"></span>Middel</button>
+          <button type="button" class="circ-btn red" data-val="høj"><span class="dot"></span>Høj</button>
+        </div>
+        <input type="hidden" id="initEffect" value="lav">
+      </div>
     </div>
-    <div class="modal-foot">
-      <button class="btn-cancel" onclick="closeModal('initModal')">Annuller</button>
-      <button class="btn-save"   onclick="saveInit()">Gem initiativ</button>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeNewInitiativeModal()">Annuller</button>
+      <button class="btn-save" onclick="saveNewInitiative()">Gem initiativ</button>
     </div>
   </div>
 </div>
 
-<!-- INITIATIVE DELETE CONFIRM -->
-<div class="modal" id="initDeleteModal">
-  <div class="modal-box" style="max-width:400px">
-    <div class="modal-head">
-      <h2>Slet initiativ?</h2>
-      <button class="close-x" onclick="closeModal('initDeleteModal')">×</button>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:14px;line-height:1.6;color:var(--muted)">
-        "<strong id="init-delete-name" style="color:var(--text)"></strong>" slettes permanent.
-      </p>
-    </div>
-    <div class="modal-foot">
-      <button class="btn-cancel" onclick="closeModal('initDeleteModal')">Annuller</button>
-      <button class="btn-danger" onclick="confirmDeleteInit()">Slet</button>
-    </div>
-  </div>
-</div>
-
-<footer>
-  <strong>Prosliding.dk</strong> · Frivilligplatform ·
-  <span style="color:rgba(255,255,255,0.2);">
-    Farver: <span style="color:#22c55e">●</span> Lav &nbsp;
-    <span style="color:#f59e0b">●</span> Middel &nbsp;
-    <span style="color:#ef4444">●</span> Høj
-  </span>
-</footer>
-
-<!-- ═══════════════════ JAVASCRIPT ════════════════════════════════════════════ -->
 <script>
-/* ── CONSTANTS ──────────────────────────────────────────────────────────────── */
-const HOR_LBLS = ['Dage','Uger','Måneder','År'];
-const IKONER   = ['📁','🌐','📣','💼','🤝','📸','🏆','🎯','📊','✉️','🛠️','🎽','📅','💡','🏅','🧩','🎬','🗓️'];
+// ===== CONSTANTS =====
+const HORIZON_LABELS = ['Dage', 'Uger', 'Måneder', 'År'];
+const HORIZON_VALUES = ['dage', 'uger', 'måneder', 'år'];
+const HORIZON_ORDER  = { dage: 0, uger: 1, måneder: 2, år: 3 };
 
-/* ── STATE ──────────────────────────────────────────────────────────────────── */
-let workspaces    = [];   // { id, navn, beskrivelse, ikon, createdAt }
-let initiatives   = [];   // { id, wsId, titel, kort, detaljer, effekt, status, difficulty, effect, horizonIndex, deadline, roi, cost, createdAt }
-let nextWsId      = 1;
-let nextInitId    = 1;
-let activeWsId    = null; // null = home/overview
+const KANBAN_COLS = [
+  { id: 'ide',       label: 'Idé',       dotClass: 'dot-ide' },
+  { id: 'planlagt',  label: 'Planlagt',  dotClass: 'dot-planlagt' },
+  { id: 'igang',     label: 'Igang',     dotClass: 'dot-igang' },
+  { id: 'afsluttet', label: 'Afsluttet', dotClass: 'dot-afsluttet' },
+];
 
-let fStatus   = 'all';
-let fDiff     = 'all';
-let fEffect   = 'all';
-let fHorizon  = 'all';
-let currentView = 'card'; // 'card' | 'table'
+// ===== STATE (in-memory only – no localStorage) =====
+let workspaces       = [];
+let nextWorkspaceId  = 1;
+let nextInitiativeId = 1;
 
-let tlStatus  = 'all';
-let tlHorizon = 'all';
-let tlDiff    = 'all';
-let tlEffect  = 'all';
+let appState = {
+  page:        'dashboard',  // 'dashboard' | 'workspaces' | 'workspace'
+  workspaceId: null,
+  detailView:  'kanban',     // 'list' | 'kanban' | 'timeline'
+};
 
-let editingWsId    = null;
-let deletingWsId   = null;
-let deletingInitId = null;
-let selectedIkon   = '📁';
+let currentFilters = {
+  audience: 'all', status: 'all', horizon: 'all',
+  impl: 'all', effect: 'all', deadline: 'all',
+};
+let currentSort       = 'default';
+let newInitiativeWsId = null;
 
-/* ── MODAL HELPERS ──────────────────────────────────────────────────────────── */
-function openModal(id)  { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
-});
-
-/* ── IKON PICKER ─────────────────────────────────────────────────────────────── */
-function buildIkonPicker(selected) {
-  selectedIkon = selected || '📁';
-  const el = document.getElementById('ikon-picker');
-  el.innerHTML = '';
-  IKONER.forEach(ikon => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'ikon-opt' + (ikon === selectedIkon ? ' sel' : '');
-    btn.textContent = ikon;
-    btn.onclick = () => {
-      el.querySelectorAll('.ikon-opt').forEach(b => b.classList.remove('sel'));
-      btn.classList.add('sel');
-      selectedIkon = ikon;
-    };
-    el.appendChild(btn);
-  });
+// ===== HELPERS =====
+function implClass(v)    { return v === 'lav' ? 'impl-low' : v === 'middel' ? 'impl-mid' : 'impl-high'; }
+function implDotClass(v) { return v === 'lav' ? 'green' : v === 'middel' ? 'yellow' : 'red'; }
+function implLabel(v)    { return v === 'lav' ? 'Lav' : v === 'middel' ? 'Middel' : 'Høj'; }
+function horizonLabel(v) { if (!v) return 'Uger'; return v.charAt(0).toUpperCase() + v.slice(1); }
+function statusLabel(s) {
+  return { ide: 'Idé', planlagt: 'Planlagt', igang: 'Igang', afsluttet: 'Afsluttet' }[s] || s;
 }
 
-/* ── HORIZON LABEL ───────────────────────────────────────────────────────────── */
-function setHorLbl(elId, val) {
-  const el = document.getElementById(elId);
-  if (el) el.textContent = HOR_LBLS[parseInt(val)] || 'Uger';
+function getWorkspace(id) { return workspaces.find(ws => ws.id === id); }
+
+function getAllInitiatives() {
+  return workspaces.flatMap(ws =>
+    ws.initiatives.map(i => Object.assign({}, i, { workspaceName: ws.name, workspaceIcon: ws.icon }))
+  );
 }
 
-/* ── BADGE HELPERS ───────────────────────────────────────────────────────────── */
-function diffBadge(d) {
-  const m = { low:['#22c55e','b-low','Lav'], mid:['#f59e0b','b-mid','Middel'], high:['#ef4444','b-high','Høj'] };
-  const [c,cls,l] = m[d]||m.low;
-  return `<span class="badge ${cls}"><span class="dot" style="background:${c}"></span>${l}</span>`;
-}
-function effectBadge(e) {
-  const m = { low:['#22c55e','b-low','Lav'], mid:['#f59e0b','b-mid','Middel'], high:['#ef4444','b-high','Høj'] };
-  const [c,cls,l] = m[e]||m.mid;
-  return `<span class="badge ${cls}"><span class="dot" style="background:${c}"></span>${l}</span>`;
-}
-function statusBadge(s) {
-  return s === 'done'
-    ? `<span class="badge b-done">Afsluttet</span>`
-    : `<span class="badge b-ongoing">Igangværende</span>`;
-}
-function fmtDate(d) {
-  if (!d) return '';
-  return new Date(d).toLocaleDateString('da-DK',{day:'numeric',month:'short',year:'numeric'});
-}
-function isNear(d) {
-  if (!d) return false;
-  const diff = new Date(d) - new Date();
-  return diff > 0 && diff < 14*86400000;
-}
-
-/* ── FILTER CHIPS WIRING ─────────────────────────────────────────────────────── */
-function wireFilterGroup(containerId, setter) {
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  el.querySelectorAll('.fchip').forEach(btn => {
-    btn.addEventListener('click', () => {
-      el.querySelectorAll('.fchip').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      setter(btn.dataset.val);
-      renderAll();
-    });
-  });
-}
-
-/* ── DASHBOARD ────────────────────────────────────────────────────────────────�� */
-function updateDashboard() {
-  const wsInits = activeWsId !== null
-    ? initiatives.filter(i => i.wsId === activeWsId)
-    : initiatives;
-  const active  = wsInits.filter(i => i.status !== 'done');
-  const cost    = active.reduce((s,i) => s+(i.cost||0), 0);
-  const avgRoi  = active.length ? (active.reduce((s,i) => s+i.roi,0)/active.length).toFixed(1) : '—';
-
-  document.getElementById('d-ws').textContent     = workspaces.length;
-  document.getElementById('d-active').textContent = active.length;
-  document.getElementById('d-cost').textContent   = cost ? cost.toLocaleString('da-DK') : '0';
-  document.getElementById('d-roi').textContent    = avgRoi;
-}
-
-/* ── WORKSPACE BAR ───────────────────────────────────────────────────────────── */
-function renderWsBar() {
-  const inner = document.getElementById('ws-bar-inner');
-  inner.innerHTML = '<span class="ws-bar-lbl">Område</span>';
-
-  // "Alle" button
-  const all = document.createElement('button');
-  all.className = 'wsbtn' + (activeWsId === null ? ' active' : '');
-  all.textContent = 'Oversigt';
-  all.onclick = () => selectWorkspace(null);
-  inner.appendChild(all);
-
-  workspaces.forEach(ws => {
-    const btn = document.createElement('button');
-    btn.className = 'wsbtn' + (activeWsId === ws.id ? ' active' : '');
-    btn.innerHTML = `<span class="wsbtn-ikon">${ws.ikon}</span>${ws.navn}`;
-    btn.onclick = () => selectWorkspace(ws.id);
-    inner.appendChild(btn);
-  });
-}
-
-/* ── SELECT WORKSPACE ────────────────────────────────────────────────────────── */
-function selectWorkspace(wsId) {
-  activeWsId = wsId;
-
-  // update header sub
-  if (wsId === null) {
-    document.getElementById('header-sub').textContent = 'Vælg et arbejdsområde nedenfor';
-    document.getElementById('btn-new-init').style.display = 'none';
-    document.getElementById('btn-new-ws').style.display   = '';
-    document.getElementById('filter-panel').style.display = 'none';
-  } else {
-    const ws = workspaces.find(w => w.id === wsId);
-    document.getElementById('header-sub').textContent = ws ? ws.beskrivelse || ws.navn : '';
-    document.getElementById('btn-new-init').style.display = '';
-    document.getElementById('btn-new-ws').style.display   = 'none';
-    document.getElementById('filter-panel').style.display = '';
-    // reset filters
-    fStatus = 'all'; fDiff = 'all'; fEffect = 'all'; fHorizon = 'all';
-    ['f-status','f-diff','f-effect','f-horizon'].forEach(id => {
-      const container = document.getElementById(id);
-      if (container) {
-        container.querySelectorAll('.fchip').forEach(b => b.classList.remove('active'));
-        container.querySelector('[data-val="all"]').classList.add('active');
-      }
-    });
-    currentView = 'card';
-    document.getElementById('vbtn-card').classList.add('active');
-    document.getElementById('vbtn-table').classList.remove('active');
+// ===== NAVIGATION =====
+function navigate(page, workspaceId) {
+  appState.page        = page;
+  appState.workspaceId = workspaceId !== undefined ? workspaceId : null;
+  if (page !== 'workspace') {
+    currentFilters = { audience: 'all', status: 'all', horizon: 'all', impl: 'all', effect: 'all', deadline: 'all' };
+    currentSort    = 'default';
   }
-
-  renderWsBar();
-  renderAll();
+  renderSidebar();
+  renderMain();
 }
 
-/* ── SORT + FILTER ───────────────────────────────────────────────────────────── */
-function getSorted(arr) {
-  const sort = document.getElementById('sort-select').value;
-  const copy = [...arr];
-  if      (sort==='roi')      copy.sort((a,b) => b.roi - a.roi);
-  else if (sort==='cost')     copy.sort((a,b) => (a.cost||0)-(b.cost||0));
-  else if (sort==='deadline') copy.sort((a,b) => { if(!a.deadline)return 1; if(!b.deadline)return -1; return new Date(a.deadline)-new Date(b.deadline); });
-  else if (sort==='horizon')  copy.sort((a,b) => (a.horizonIndex||0)-(b.horizonIndex||0));
-  else copy.sort((a,b) => a.id-b.id);
-  return copy;
-}
-function getFiltered(arr) {
-  return arr.filter(i => {
-    if (fStatus  !== 'all' && i.status       !== fStatus)          return false;
-    if (fDiff    !== 'all' && i.difficulty   !== fDiff)            return false;
-    if (fEffect  !== 'all' && i.effect       !== fEffect)          return false;
-    if (fHorizon !== 'all' && String(i.horizonIndex) !== fHorizon) return false;
-    return true;
+// ===== SIDEBAR =====
+function renderSidebar() {
+  document.getElementById('nav-dashboard').classList.toggle('active', appState.page === 'dashboard');
+  document.getElementById('nav-workspaces').classList.toggle('active', appState.page === 'workspaces');
+
+  var list = document.getElementById('sidebar-ws-list');
+  list.innerHTML = '';
+  workspaces.forEach(function(ws) {
+    var el = document.createElement('div');
+    el.className = 'sidebar-ws-item' + (appState.workspaceId === ws.id ? ' active' : '');
+    el.innerHTML =
+      '<span class="sidebar-ws-icon">' + ws.icon + '</span>' +
+      '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escHtml(ws.name) + '</span>' +
+      '<span class="sidebar-ws-count">' + ws.initiatives.length + '</span>';
+    el.onclick = (function(id) { return function() { navigate('workspace', id); }; })(ws.id);
+    list.appendChild(el);
   });
 }
 
-/* ── MAIN RENDER ─────────────────────────────────────────────────────────────── */
-function renderAll() {
-  updateDashboard();
-  renderWsBar();
-  const main = document.getElementById('main-content');
-
-  if (activeWsId === null) {
-    // HOME VIEW
-    renderHome(main);
-    return;
-  }
-
-  const wsInits   = initiatives.filter(i => i.wsId === activeWsId);
-  const filtered  = getSorted(getFiltered(wsInits));
-  const active    = filtered.filter(i => i.status !== 'done');
-  const done      = filtered.filter(i => i.status === 'done');
-
-  if (currentView === 'table') {
-    renderTable(main, filtered);
-  } else {
-    renderCards(main, active, done, wsInits.length === 0);
-  }
+// ===== MAIN RENDER DISPATCHER =====
+function renderMain() {
+  var mc = document.getElementById('main-content');
+  if (appState.page === 'dashboard')  renderDashboard(mc);
+  else if (appState.page === 'workspaces') renderWorkspacesOverview(mc);
+  else if (appState.page === 'workspace')  renderWorkspaceDetail(mc, appState.workspaceId);
 }
 
-/* ── HOME VIEW ───────────────────────────────────────────────────────────────── */
-function renderHome(main) {
+// Simple HTML escape helper
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ===== A) DASHBOARD =====
+function renderDashboard(container) {
+  var all         = getAllInitiatives();
+  var activeCount = all.filter(function(i){ return i.status !== 'afsluttet'; }).length;
+  var inProgress  = all.filter(function(i){ return i.status === 'igang'; }).length;
+  var totalCost   = all.reduce(function(s,i){ return s + (i.cost||0); }, 0);
+  var avgROI      = all.length > 0
+    ? (all.reduce(function(s,i){ return s + (i.roi||0); }, 0) / all.length).toFixed(1)
+    : '—';
+
+  var now  = new Date();
+  var soon = all
+    .filter(function(i){ return i.deadline && i.status !== 'afsluttet'; })
+    .map(function(i){ return Object.assign({}, i, { daysLeft: Math.ceil((new Date(i.deadline) - now) / 86400000) }); })
+    .filter(function(i){ return i.daysLeft <= 30; })
+    .sort(function(a,b){ return a.daysLeft - b.daysLeft; });
+
+  var soonHtml = soon.length === 0
+    ? '<div class="empty-state" style="padding:1.5rem;text-align:left;">Ingen kommende deadlines inden for 30 dage.</div>'
+    : soon.map(function(i){
+        var left = i.daysLeft <= 0 ? 'Overskredet' : i.daysLeft + ' dage tilbage';
+        return '<div class="dash-deadline-item">' +
+          '<span class="dl-date">&#x1F4C5; ' + escHtml(i.deadline) + '</span>' +
+          '<div><div class="dl-title">' + escHtml(i.title) + '</div>' +
+          '<div class="dl-ws">' + i.workspaceIcon + ' ' + escHtml(i.workspaceName) + ' &middot; ' + left + '</div></div>' +
+          '<span class="status-badge status-' + i.status + '">' + statusLabel(i.status) + '</span>' +
+          '</div>';
+      }).join('');
+
+  var wsHtml;
   if (workspaces.length === 0) {
-    main.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">🗂️</div>
-        <div class="empty-title">Ingen arbejdsområder endnu</div>
-        <div class="empty-desc">Opret dit første arbejdsområde for at komme i gang. Arbejdsområder samler initiativer og gør det nemt for frivillige at finde relevant indhold.</div>
-        <button class="empty-cta" onclick="openWsModal()">＋ Opret første arbejdsområde</button>
-      </div>`;
-    return;
-  }
-
-  main.innerHTML = '<div class="ws-grid" id="ws-grid"></div>';
-  const grid = document.getElementById('ws-grid');
-
-  workspaces.forEach(ws => {
-    const count = initiatives.filter(i => i.wsId === ws.id).length;
-    const card  = document.createElement('div');
-    card.className = 'ws-card';
-    card.innerHTML = `
-      <div class="ws-card-top" onclick="selectWorkspace(${ws.id})">
-        <div class="ws-ikon">${ws.ikon}</div>
-        <div>
-          <div class="ws-name">${esc(ws.navn)}</div>
-          <div class="ws-desc">${esc(ws.beskrivelse||'')}</div>
-        </div>
-      </div>
-      <div class="ws-card-foot">
-        <div class="ws-count"><strong>${count}</strong> initiativ${count!==1?'er':''}</div>
-        <div class="ws-card-btns">
-          <button class="icon-btn" title="Rediger" onclick="event.stopPropagation();openWsEditModal(${ws.id})">✎</button>
-          <button class="icon-btn" title="Slet"    onclick="event.stopPropagation();openWsDeleteConfirm(${ws.id})" style="color:var(--accent)">🗑</button>
-        </div>
-      </div>`;
-    grid.appendChild(card);
-  });
-
-  // add card
-  const add = document.createElement('div');
-  add.className = 'ws-add-card';
-  add.onclick = openWsModal;
-  add.innerHTML = `<div class="ws-add-icon">＋</div><div class="ws-add-txt">Tilføj arbejdsområde</div>`;
-  grid.appendChild(add);
-}
-
-/* ── CARD VIEW ───────────────────────────────────────────────────────────────── */
-function renderCards(main, active, done, isEmpty) {
-  main.innerHTML = '';
-
-  if (isEmpty) {
-    main.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">📋</div>
-        <div class="empty-title">Ingen initiativer endnu</div>
-        <div class="empty-desc">Opret det første initiativ for dette arbejdsområde for at komme i gang.</div>
-        <button class="empty-cta" onclick="openInitModal()">＋ Opret første initiativ</button>
-      </div>`;
-    return;
-  }
-
-  if (active.length === 0 && done.length === 0) {
-    main.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">Ingen resultater</div><div class="empty-desc">Ingen initiativer matcher de valgte filtre.</div></div>`;
-    return;
-  }
-
-  if (active.length > 0) {
-    const sec = document.createElement('div');
-    sec.className = 'section-title';
-    sec.textContent = `Igangværende (${active.length})`;
-    main.appendChild(sec);
-    const grid = document.createElement('div');
-    grid.className = 'cards-grid';
-    active.forEach((c,i) => grid.appendChild(buildCard(c, i+1)));
-    main.appendChild(grid);
-  }
-
-  if (done.length > 0) {
-    const sec = document.createElement('div');
-    sec.className = 'section-title done-section';
-    sec.style.marginTop = '2.5rem';
-    sec.style.color = '#bbb';
-    sec.textContent = `Afsluttede (${done.length})`;
-    main.appendChild(sec);
-    const grid = document.createElement('div');
-    grid.className = 'cards-grid';
-    grid.style.opacity = '0.7';
-    done.forEach((c,i) => grid.appendChild(buildCard(c, i+1)));
-    main.appendChild(grid);
-  }
-}
-
-function buildCard(c, num) {
-  const pct = Math.round((c.roi/10)*100);
-  const hor = HOR_LBLS[c.horizonIndex] || 'Uger';
-  const dl  = fmtDate(c.deadline);
-  const near = isNear(c.deadline);
-
-  const div = document.createElement('div');
-  div.className = 'card' + (c.status==='done'?' done':'');
-  div.id = 'card-' + c.id;
-
-  div.innerHTML = `
-    <div class="card-header" onclick="toggleCard(${c.id})">
-      <div class="card-num">${num}</div>
-      <div class="card-header-content">
-        <div class="card-title">${esc(c.titel)}</div>
-        ${c.kort ? `<div style="font-size:12px;color:var(--muted);margin-top:3px">${esc(c.kort)}</div>` : ''}
-      </div>
-      <div class="card-header-right">
-        ${statusBadge(c.status)}
-        <span class="chevron">▼</span>
-      </div>
-    </div>
-    <div class="card-roi" onclick="toggleCard(${c.id})">
-      <span class="roi-lbl">ROI</span>
-      <div class="roi-track"><div class="roi-fill" style="width:${pct}%"></div></div>
-      <span class="roi-score">${c.roi}/10</span>
-    </div>
-    <div class="card-meta">
-      <div class="meta-badges">
-        ${diffBadge(c.difficulty)}
-        ${effectBadge(c.effect)}
-        ${c.cost ? `<span class="meta-txt">${c.cost.toLocaleString('da-DK')} kr</span>` : ''}
-        <span class="meta-txt">⏱ ${hor}</span>
-        ${dl ? `<span class="meta-txt ${near?'near':''}">📅 ${dl}</span>` : ''}
-      </div>
-      <div class="card-actions">
-        <button class="action-btn done-btn" title="${c.status==='done'?'Genaktiver':'Afslut'}" onclick="toggleDone(${c.id})">${c.status==='done'?'↩':'✓'}</button>
-        <button class="action-btn" title="Rediger" onclick="toggleEdit(${c.id})">✎</button>
-        <button class="action-btn del-btn" title="Slet" onclick="openInitDeleteConfirm(${c.id})">🗑</button>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="view-section">
-        ${c.kort ? `<div class="short-desc">${esc(c.kort)}</div>` : ''}
-        ${c.detaljer ? `<div class="detail-text">${esc(c.detaljer)}</div>` : ''}
-        ${c.effekt ? `<div class="impact-block"><div class="impact-lbl">Forventet effekt</div>${esc(c.effekt)}</div>` : ''}
-      </div>
-      <div class="edit-section">
-        <div class="edit-grid">
-          <div class="edit-field edit-full"><label class="edit-lbl">Titel</label><input class="edit-inp" id="e-titel-${c.id}" value="${esc(c.titel)}"></div>
-          <div class="edit-field edit-full"><label class="edit-lbl">Kort beskrivelse</label><input class="edit-inp" id="e-kort-${c.id}" value="${esc(c.kort||'')}"></div>
-          <div class="edit-field edit-full"><label class="edit-lbl">Detaljer</label><textarea class="edit-ta" id="e-det-${c.id}">${esc(c.detaljer||'')}</textarea></div>
-          <div class="edit-field edit-full"><label class="edit-lbl">Forventet effekt</label><textarea class="edit-ta" id="e-eff-${c.id}">${esc(c.effekt||'')}</textarea></div>
-          <div class="edit-field"><label class="edit-lbl">Pris (kr)</label><input class="edit-inp" type="number" id="e-cost-${c.id}" value="${c.cost||0}"></div>
-          <div class="edit-field"><label class="edit-lbl">Deadline</label><input class="edit-inp" type="date" id="e-dl-${c.id}" value="${c.deadline||''}"></div>
-          <div class="edit-field edit-full"><label class="edit-lbl">ROI (${c.roi})</label>
-            <div class="roi-wrap">
-              <input type="range" class="roi-slider" id="e-roi-${c.id}" min="0" max="10" step="0.5" value="${c.roi}" oninput="document.getElementById('e-roi-v-${c.id}').textContent=this.value">
-              <span class="roi-val" id="e-roi-v-${c.id}">${c.roi}</span>
-            </div>
-          </div>
-          <div class="edit-field edit-full"><label class="edit-lbl">Tidshorisont</label>
-            <div class="hor-wrap">
-              <input type="range" class="hor-slider" id="e-hor-${c.id}" min="0" max="3" step="1" value="${c.horizonIndex||0}" oninput="setHorLbl('e-hor-lbl-${c.id}',this.value)">
-              <div class="hor-lbls"><span>Dage</span><span>Uger</span><span>Måneder</span><span>År</span></div>
-              <div class="hor-cur" id="e-hor-lbl-${c.id}">${hor}</div>
-            </div>
-          </div>
-          <div class="edit-field"><label class="edit-lbl">Vanskelighed</label>
-            <div class="circle-sel">
-              <label class="circle-opt"><input type="radio" name="e-diff-${c.id}" value="low" ${c.difficulty==='low'?'checked':''}><div class="cdot g"></div><span class="clbl">Lav</span></label>
-              <label class="circle-opt"><input type="radio" name="e-diff-${c.id}" value="mid" ${c.difficulty==='mid'?'checked':''}><div class="cdot y"></div><span class="clbl">Middel</span></label>
-              <label class="circle-opt"><input type="radio" name="e-diff-${c.id}" value="high" ${c.difficulty==='high'?'checked':''}><div class="cdot r"></div><span class="clbl">Høj</span></label>
-            </div>
-          </div>
-          <div class="edit-field"><label class="edit-lbl">Estimeret effekt</label>
-            <div class="circle-sel">
-              <label class="circle-opt"><input type="radio" name="e-effect-${c.id}" value="low" ${c.effect==='low'?'checked':''}><div class="cdot g"></div><span class="clbl">Lav</span></label>
-              <label class="circle-opt"><input type="radio" name="e-effect-${c.id}" value="mid" ${c.effect==='mid'?'checked':''}><div class="cdot y"></div><span class="clbl">Middel</span></label>
-              <label class="circle-opt"><input type="radio" name="e-effect-${c.id}" value="high" ${c.effect==='high'?'checked':''}><div class="cdot r"></div><span class="clbl">Høj</span></label>
-            </div>
-          </div>
-        </div>
-        <button class="edit-save-btn" onclick="saveEdit(${c.id})">Gem ændringer</button>
-      </div>
-    </div>`;
-  return div;
-}
-
-/* ── TABLE VIEW ──────────────────────────────────────────────────────────────── */
-function renderTable(main, filtered) {
-  if (filtered.length === 0) {
-    main.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">Ingen resultater</div><div class="empty-desc">Ingen initiativer matcher de valgte filtre.</div></div>`;
-    return;
-  }
-  main.innerHTML = `
-    <div class="table-view-container active">
-      <table class="data-table">
-        <thead><tr>
-          <th>#</th><th>Titel</th><th>Status</th>
-          <th>Vanskelighed</th><th>Effekt</th>
-          <th>Horisont</th><th>Deadline</th>
-          <th>ROI</th><th>Pris (kr)</th><th></th>
-        </tr></thead>
-        <tbody>${filtered.map((c,i) => `
-          <tr class="${c.status==='done'?'done':''}">
-            <td>${i+1}</td>
-            <td><strong>${esc(c.titel)}</strong>${c.kort?`<br><span style="font-size:11px;color:var(--muted)">${esc(c.kort)}</span>`:''}</td>
-            <td>${statusBadge(c.status)}</td>
-            <td>${diffBadge(c.difficulty)}</td>
-            <td>${effectBadge(c.effect)}</td>
-            <td>${HOR_LBLS[c.horizonIndex]||'Uger'}</td>
-            <td>${fmtDate(c.deadline)||'—'}</td>
-            <td><strong style="color:var(--accent)">${c.roi}</strong></td>
-            <td>${c.cost?c.cost.toLocaleString('da-DK'):'—'}</td>
-            <td>
-              <div style="display:flex;gap:4px">
-                <button class="action-btn done-btn" onclick="toggleDone(${c.id})">${c.status==='done'?'↩':'✓'}</button>
-                <button class="action-btn del-btn"  onclick="openInitDeleteConfirm(${c.id})">🗑</button>
-              </div>
-            </td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>`;
-}
-
-/* ── TIMELINE ────────────────────────────────────────────────────────────────── */
-function openTimeline() {
-  renderTimeline();
-  document.getElementById('timelineModal').classList.add('open');
-}
-function closeTimeline() {
-  document.getElementById('timelineModal').classList.remove('open');
-}
-function renderTimeline() {
-  const wsInits = activeWsId !== null
-    ? initiatives.filter(i => i.wsId === activeWsId)
-    : initiatives;
-
-  const filtered = wsInits.filter(i => {
-    if (tlStatus  !== 'all' && i.status                !== tlStatus)   return false;
-    if (tlHorizon !== 'all' && String(i.horizonIndex)  !== tlHorizon)  return false;
-    if (tlDiff    !== 'all' && i.difficulty            !== tlDiff)     return false;
-    if (tlEffect  !== 'all' && i.effect                !== tlEffect)   return false;
-    return true;
-  });
-
-  const items = document.getElementById('tl-items');
-  if (filtered.length === 0) {
-    items.innerHTML = `<div class="empty-state" style="padding:2rem"><div class="empty-icon">🔍</div><div class="empty-title">Ingen resultater</div></div>`;
-    return;
-  }
-  items.innerHTML = '';
-  filtered.forEach((c,i) => {
-    const side = i%2===0 ? 'left' : 'right';
-    const hor  = HOR_LBLS[c.horizonIndex] || 'Uger';
-    const dl   = fmtDate(c.deadline);
-    const div  = document.createElement('div');
-    div.className = `tl-item ${side}`;
-    div.innerHTML = `
-      <div class="tl-marker"></div>
-      <div class="tl-box">
-        <div class="tl-period">${hor}${dl?' · Deadline: '+dl:''}</div>
-        <h3>${esc(c.titel)}</h3>
-        ${c.kort?`<p>${esc(c.kort)}</p>`:''}
-        <div class="tl-badges">
-          ${statusBadge(c.status)}
-          ${diffBadge(c.difficulty)}
-          ${effectBadge(c.effect)}
-        </div>
-      </div>`;
-    items.appendChild(div);
-  });
-}
-
-// Wire timeline filter chips
-document.querySelectorAll('.tlchip').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const key = btn.dataset.tl;
-    document.querySelectorAll(`.tlchip[data-tl="${key}"]`).forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const val = btn.dataset.val;
-    if (key==='status')  tlStatus  = val;
-    if (key==='horizon') tlHorizon = val;
-    if (key==='diff')    tlDiff    = val;
-    if (key==='effect')  tlEffect  = val;
-    renderTimeline();
-  });
-});
-document.getElementById('timelineModal').addEventListener('click', e => {
-  if (e.target === document.getElementById('timelineModal')) closeTimeline();
-});
-
-/* ── VIEW SWITCH ─────────────────────────────────────────────────────────────── */
-function setView(v) {
-  currentView = v;
-  document.getElementById('vbtn-card').classList.toggle('active', v==='card');
-  document.getElementById('vbtn-table').classList.toggle('active', v==='table');
-  renderAll();
-}
-
-/* ── CARD INTERACTIONS ───────────────────────────────────────────────────────── */
-function toggleCard(id) {
-  const el = document.getElementById('card-'+id);
-  if (el) el.classList.toggle('expanded');
-}
-function toggleEdit(id) {
-  const el = document.getElementById('card-'+id);
-  if (!el) return;
-  el.classList.add('expanded');
-  el.classList.toggle('edit-mode');
-}
-function toggleDone(id) {
-  const c = initiatives.find(x => x.id===id);
-  if (!c) return;
-  c.status = c.status==='done' ? 'ongoing' : 'done';
-  renderAll();
-}
-function saveEdit(id) {
-  const c = initiatives.find(x => x.id===id);
-  if (!c) return;
-  c.titel         = document.getElementById(`e-titel-${id}`).value;
-  c.kort          = document.getElementById(`e-kort-${id}`).value;
-  c.detaljer      = document.getElementById(`e-det-${id}`).value;
-  c.effekt        = document.getElementById(`e-eff-${id}`).value;
-  c.cost          = parseFloat(document.getElementById(`e-cost-${id}`).value)||0;
-  c.deadline      = document.getElementById(`e-dl-${id}`).value;
-  c.roi           = parseFloat(document.getElementById(`e-roi-${id}`).value)||0;
-  c.horizonIndex  = parseInt(document.getElementById(`e-hor-${id}`).value)||0;
-  const de = document.querySelector(`input[name="e-diff-${id}"]:checked`);
-  const ee = document.querySelector(`input[name="e-effect-${id}"]:checked`);
-  if (de) c.difficulty = de.value;
-  if (ee) c.effect     = ee.value;
-  renderAll();
-}
-
-/* ── WORKSPACE CRUD ──────────────────────────────────────────────────────────── */
-function openWsModal() {
-  editingWsId = null;
-  document.getElementById('ws-modal-title').textContent = 'Nyt arbejdsområde';
-  document.getElementById('ws-navn').value = '';
-  document.getElementById('ws-desc').value = '';
-  buildIkonPicker('📁');
-  openModal('wsModal');
-  setTimeout(() => document.getElementById('ws-navn').focus(), 80);
-}
-function openWsEditModal(id) {
-  const ws = workspaces.find(w => w.id===id);
-  if (!ws) return;
-  editingWsId = id;
-  document.getElementById('ws-modal-title').textContent = 'Rediger arbejdsområde';
-  document.getElementById('ws-navn').value = ws.navn;
-  document.getElementById('ws-desc').value = ws.beskrivelse||'';
-  buildIkonPicker(ws.ikon||'📁');
-  openModal('wsModal');
-}
-function saveWorkspace() {
-  const navn = document.getElementById('ws-navn').value.trim();
-  if (!navn) { alert('Navn er påkrævet'); return; }
-  if (editingWsId) {
-    const ws = workspaces.find(w => w.id===editingWsId);
-    if (ws) { ws.navn=navn; ws.beskrivelse=document.getElementById('ws-desc').value.trim(); ws.ikon=selectedIkon; }
+    wsHtml = '<div class="empty-state">Ingen arbejdsområder endnu.<br>' +
+      '<button class="btn-primary" style="margin-top:1rem;" onclick="openNewWorkspaceModal()">+ Nyt arbejdsområde</button></div>';
   } else {
-    workspaces.push({ id:nextWsId++, navn, beskrivelse:document.getElementById('ws-desc').value.trim(), ikon:selectedIkon, createdAt:new Date().toISOString() });
+    wsHtml = '<div class="ws-grid" style="max-width:900px;">' +
+      workspaces.map(function(ws){
+        var active = ws.initiatives.filter(function(i){ return i.status !== 'afsluttet'; }).length;
+        return '<div class="ws-card" onclick="navigate(\'workspace\',' + ws.id + ')">' +
+          '<div class="ws-card-icon">' + ws.icon + '</div>' +
+          '<div class="ws-card-name">' + escHtml(ws.name) + '</div>' +
+          '<div class="ws-card-desc">' + escHtml(ws.description) + '</div>' +
+          '<div class="ws-card-meta"><strong>' + ws.initiatives.length + '</strong> initiativer &middot; ' + active + ' aktive</div>' +
+          '</div>';
+      }).join('') +
+      '</div>';
   }
-  closeModal('wsModal');
-  renderAll();
-}
-function openWsDeleteConfirm(id) {
-  deletingWsId = id;
-  const ws = workspaces.find(w => w.id===id);
-  document.getElementById('ws-delete-name').textContent = ws ? ws.navn : '';
-  openModal('wsDeleteModal');
-}
-function confirmDeleteWs() {
-  workspaces  = workspaces.filter(w => w.id !== deletingWsId);
-  initiatives = initiatives.filter(i => i.wsId !== deletingWsId);
-  if (activeWsId === deletingWsId) activeWsId = null;
-  closeModal('wsDeleteModal');
-  selectWorkspace(null);
+
+  container.innerHTML =
+    '<div class="topbar">' +
+      '<div>' +
+        '<div class="topbar-title">&#x1F4CA; Dashboard</div>' +
+        '<div class="topbar-sub">Overblik over alle arbejdsområder og initiativer</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="page-body">' +
+      '<div class="dash-stat-grid">' +
+        '<div class="dash-stat-card"><div class="dsc-icon">&#x1F4C1;</div><div class="dsc-value">' + workspaces.length + '</div><div class="dsc-label">Arbejdsområder</div></div>' +
+        '<div class="dash-stat-card"><div class="dsc-icon">&#x1F680;</div><div class="dsc-value">' + activeCount + '</div><div class="dsc-label">Aktive initiativer</div></div>' +
+        '<div class="dash-stat-card"><div class="dsc-icon">&#x26A1;</div><div class="dsc-value">' + inProgress + '</div><div class="dsc-label">Igangværende</div></div>' +
+        '<div class="dash-stat-card"><div class="dsc-icon">&#x1F4C8;</div><div class="dsc-value">' + avgROI + '</div><div class="dsc-label">Gns. ROI</div></div>' +
+        '<div class="dash-stat-card"><div class="dsc-icon">&#x1F4B0;</div><div class="dsc-value">' + (totalCost > 0 ? totalCost.toLocaleString('da-DK') : '0') + '</div><div class="dsc-label">Estimeret pris (DKK)</div></div>' +
+      '</div>' +
+      '<div class="dash-section-title">&#x23F0; Kommende deadlines (inden for 30 dage)</div>' +
+      '<div class="dash-deadline-list">' + soonHtml + '</div>' +
+      '<div class="dash-section-title">&#x1F4C1; Alle arbejdsområder</div>' +
+      wsHtml +
+    '</div>';
 }
 
-/* ── INITIATIVE CRUD ─────────────────────────────────────────────────────────── */
-function openInitModal() {
-  ['init-titel','init-kort','init-detaljer','init-effekt','init-cost','init-deadline'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.value='';
+// ===== B) WORKSPACES OVERVIEW =====
+function renderWorkspacesOverview(container) {
+  var cardsHtml = workspaces.map(function(ws){
+    var active = ws.initiatives.filter(function(i){ return i.status !== 'afsluttet'; }).length;
+    return '<div class="ws-card" onclick="navigate(\'workspace\',' + ws.id + ')">' +
+      '<div class="ws-card-icon">' + ws.icon + '</div>' +
+      '<div class="ws-card-name">' + escHtml(ws.name) + '</div>' +
+      '<div class="ws-card-desc">' + escHtml(ws.description) + '</div>' +
+      '<div class="ws-card-meta"><strong>' + ws.initiatives.length + '</strong> initiativer &middot; ' + active + ' aktive</div>' +
+      '</div>';
+  }).join('');
+
+  container.innerHTML =
+    '<div class="topbar">' +
+      '<div>' +
+        '<div class="topbar-title">&#x1F4C1; Arbejdsområder</div>' +
+        '<div class="topbar-sub">' + workspaces.length + ' arbejdsområde' + (workspaces.length !== 1 ? 'r' : '') + '</div>' +
+      '</div>' +
+      '<div class="topbar-actions"><button class="btn-primary" onclick="openNewWorkspaceModal()">+ Nyt arbejdsområde</button></div>' +
+    '</div>' +
+    '<div class="page-body">' +
+      '<div class="ws-grid">' +
+        cardsHtml +
+        '<div class="ws-card ws-add-card" onclick="openNewWorkspaceModal()">' +
+          '<div class="ws-add-plus">+</div>' +
+          '<div class="ws-add-label">Nyt arbejdsområde</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+}
+
+// ===== C) WORKSPACE DETAIL =====
+function renderWorkspaceDetail(container, wsId) {
+  var ws = getWorkspace(wsId);
+  if (!ws) { navigate('workspaces'); return; }
+
+  var filtered = getFilteredInitiatives(ws.initiatives);
+  var sorted   = getSortedInitiatives(filtered);
+
+  var view = appState.detailView;
+
+  container.innerHTML =
+    '<div class="topbar">' +
+      '<div style="display:flex;align-items:center;gap:12px;">' +
+        '<span class="ws-detail-icon-big">' + ws.icon + '</span>' +
+        '<div>' +
+          '<div class="ws-detail-name">' + escHtml(ws.name) + '</div>' +
+          '<div class="ws-detail-desc">' + escHtml(ws.description) + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="topbar-actions">' +
+        '<button class="btn-primary" onclick="openNewInitiativeModal(' + wsId + ')">+ Nyt initiativ</button>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="detail-toolbar">' +
+      '<div class="view-switcher">' +
+        '<button class="vs-btn' + (view==='list'    ?' active':'') + '" onclick="switchDetailView(\'list\')">&#x2630; Liste</button>' +
+        '<button class="vs-btn' + (view==='kanban'  ?' active':'') + '" onclick="switchDetailView(\'kanban\')">&#x1F4CC; Kanban</button>' +
+        '<button class="vs-btn' + (view==='timeline'?' active':'') + '" onclick="switchDetailView(\'timeline\')">&#x1F4C5; Tidslinje</button>' +
+      '</div>' +
+      '<select class="sort-select" id="sort-select" onchange="onSortChange()">' +
+        '<option value="default"' + (currentSort==='default' ?' selected':'') + '>Standard</option>' +
+        '<option value="roi"'    + (currentSort==='roi'     ?' selected':'') + '>ROI (høj→lav)</option>' +
+        '<option value="cost"'   + (currentSort==='cost'    ?' selected':'') + '>Pris (lav→høj)</option>' +
+        '<option value="horizon"'+ (currentSort==='horizon' ?' selected':'') + '>Tidshorisont</option>' +
+        '<option value="deadline"'+(currentSort==='deadline'?' selected':'') + '>Deadline</option>' +
+      '</select>' +
+    '</div>' +
+
+    buildFilterRowHtml() +
+
+    '<div id="view-container"></div>';
+
+  renderDetailView(sorted, wsId);
+}
+
+function buildFilterRowHtml() {
+  var cf = currentFilters;
+
+  function pills(options, key, dataKey) {
+    return options.map(function(o){
+      return '<button class="fp-btn' + (cf[key]===o.v?' active':'') + '" data-' + dataKey + '="' + o.v + '" onclick="setFilter(\'' + key + '\',this,\'' + dataKey + '\')">' + o.l + '</button>';
+    }).join('');
+  }
+
+  function colorPills(key) {
+    var opts = [
+      { v:'all',    l:'Alle' },
+      { v:'lav',    l:'<span class="circle-dot green"></span>Lav' },
+      { v:'middel', l:'<span class="circle-dot yellow"></span>Middel' },
+      { v:'høj',    l:'<span class="circle-dot red"></span>Høj' },
+    ];
+    return opts.map(function(o){
+      return '<button class="fp-btn' + (cf[key]===o.v?' active':'') + '" data-' + key + '="' + o.v + '" onclick="setFilter(\'' + key + '\',this,\'' + key + '\')">' + o.l + '</button>';
+    }).join('');
+  }
+
+  return '<div class="detail-filter-row">' +
+    '<div class="fp-group"><span class="fp-label">Målgruppe</span>' +
+      pills([{v:'all',l:'Alle'},{v:'sponsor',l:'Sponsor'},{v:'fan',l:'Fan'},{v:'frivillig',l:'Frivillig'}],'audience','aud') +
+    '</div>' +
+    '<div class="fp-sep"></div>' +
+    '<div class="fp-group"><span class="fp-label">Status</span>' +
+      pills([{v:'all',l:'Alle'},{v:'ide',l:'Idé'},{v:'planlagt',l:'Planlagt'},{v:'igang',l:'Igang'},{v:'afsluttet',l:'Afsluttet'}],'status','status') +
+    '</div>' +
+    '<div class="fp-sep"></div>' +
+    '<div class="fp-group"><span class="fp-label">Horisont</span>' +
+      pills([{v:'all',l:'Alle'},{v:'dage',l:'Dage'},{v:'uger',l:'Uger'},{v:'måneder',l:'Måneder'},{v:'år',l:'År'}],'horizon','horizon') +
+    '</div>' +
+    '<div class="fp-sep"></div>' +
+    '<div class="fp-group"><span class="fp-label">Vanskelighed</span>' + colorPills('impl') + '</div>' +
+    '<div class="fp-sep"></div>' +
+    '<div class="fp-group"><span class="fp-label">Effekt</span>' + colorPills('effect') + '</div>' +
+    '<div class="fp-sep"></div>' +
+    '<div class="fp-group"><span class="fp-label">Deadline</span>' +
+      pills([{v:'all',l:'Alle'},{v:'has',l:'Har deadline'},{v:'none',l:'Ingen'}],'deadline','deadline') +
+    '</div>' +
+    '<button class="btn-reset-filters" onclick="resetFilters()">&#x21BA; Nulstil</button>' +
+    '</div>';
+}
+
+function switchDetailView(view) {
+  appState.detailView = view;
+  renderWorkspaceDetail(document.getElementById('main-content'), appState.workspaceId);
+}
+
+function renderDetailView(sorted, wsId) {
+  var vc = document.getElementById('view-container');
+  if (!vc) return;
+  if (appState.detailView === 'list')     renderListView(vc, sorted, wsId);
+  else if (appState.detailView === 'kanban')   renderKanbanView(vc, sorted, wsId);
+  else if (appState.detailView === 'timeline') renderTimelineView(vc, sorted);
+}
+
+// ===== LIST VIEW =====
+function renderListView(container, initiatives, wsId) {
+  if (initiatives.length === 0) {
+    container.innerHTML = '<div class="list-view"><div class="empty-state">Ingen initiativer matcher dine filtre.</div></div>';
+    return;
+  }
+  var rows = initiatives.map(function(i){
+    var aud = i.audiences.filter(function(a){ return a !== 'all'; })
+      .map(function(a){ return a.charAt(0).toUpperCase() + a.slice(1); }).join(', ') || '—';
+    return '<tr class="status-' + i.status + '">' +
+      '<td>' + i.id + '</td>' +
+      '<td><strong>' + escHtml(i.title) + '</strong>' +
+        (i.shortDesc ? '<br><small style="color:var(--text-muted)">' + escHtml(i.shortDesc) + '</small>' : '') +
+      '</td>' +
+      '<td><span class="status-badge status-' + i.status + '">' + statusLabel(i.status) + '</span></td>' +
+      '<td>' + aud + '</td>' +
+      '<td>' + (i.roi||0) + '</td>' +
+      '<td>' + (i.cost||0).toLocaleString('da-DK') + '</td>' +
+      '<td>' + horizonLabel(i.timeHorizon) + '</td>' +
+      '<td><span class="impl-badge ' + implClass(i.impl) + '"><span class="badge-dot ' + implDotClass(i.impl) + '"></span>' + implLabel(i.impl) + '</span></td>' +
+      '<td><span class="impl-badge ' + implClass(i.effect) + '"><span class="badge-dot ' + implDotClass(i.effect) + '"></span>' + implLabel(i.effect) + '</span></td>' +
+      '<td>' + (i.deadline || '—') + '</td>' +
+      '<td style="white-space:nowrap;">' +
+        '<button class="action-btn" onclick="cycleInitiativeStatus(' + wsId + ',' + i.id + ')" title="Næste status">&#x1F504;</button> ' +
+        '<button class="action-btn" onclick="deleteInitiative(' + wsId + ',' + i.id + ')" title="Slet">&#x1F5D1;&#xFE0F;</button>' +
+      '</td>' +
+      '</tr>';
+  }).join('');
+
+  container.innerHTML =
+    '<div class="list-view">' +
+    '<table class="data-table"><thead><tr>' +
+      '<th>#</th><th>Titel</th><th>Status</th><th>Målgruppe</th>' +
+      '<th>ROI</th><th>Pris (DKK)</th><th>Horisont</th>' +
+      '<th>Vanskelighed</th><th>Effekt</th><th>Deadline</th><th>Handlinger</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+}
+
+// ===== KANBAN VIEW =====
+function renderKanbanView(container, initiatives, wsId) {
+  var colsHtml = KANBAN_COLS.map(function(col){
+    var cards = initiatives.filter(function(i){ return i.status === col.id; });
+    var cardsHtml = cards.length === 0
+      ? '<div class="kanban-empty">Ingen initiativer</div>'
+      : cards.map(function(i){
+          var dl = i.deadline ? '<span class="impl-badge deadline-badge">&#x1F4C5; ' + escHtml(i.deadline) + '</span>' : '';
+          return '<div class="kanban-card">' +
+            '<div class="kc-title">' + escHtml(i.title) + '</div>' +
+            '<div class="kc-badges">' +
+              '<span class="impl-badge ' + implClass(i.impl) + '"><span class="badge-dot ' + implDotClass(i.impl) + '"></span>' + implLabel(i.impl) + '</span>' +
+              '<span class="impl-badge ' + implClass(i.effect) + '"><span class="badge-dot ' + implDotClass(i.effect) + '"></span>' + implLabel(i.effect) + ' effekt</span>' +
+              '<span class="impl-badge horizon-badge">&#x23F1;&#xFE0F; ' + horizonLabel(i.timeHorizon) + '</span>' +
+              dl +
+            '</div>' +
+            '<div class="kc-footer">' +
+              '<div class="kc-roi">ROI <div class="roi-mini-track"><div class="roi-mini-fill" style="width:' + ((i.roi||0)*10) + '%"></div></div><span>' + (i.roi||0) + '</span></div>' +
+              '<div class="kc-actions">' +
+                '<button class="kc-action-btn" onclick="cycleInitiativeStatus(' + wsId + ',' + i.id + ')" title="Næste status">&#x1F504;</button>' +
+                '<button class="kc-action-btn" onclick="deleteInitiative(' + wsId + ',' + i.id + ')" title="Slet">&#x1F5D1;&#xFE0F;</button>' +
+              '</div>' +
+            '</div>' +
+            '</div>';
+        }).join('');
+
+    return '<div class="kanban-col">' +
+      '<div class="kanban-col-header">' +
+        '<span class="kanban-col-dot ' + col.dotClass + '"></span>' +
+        '<span class="kanban-col-title">' + col.label + '</span>' +
+        '<span class="kanban-col-count">' + cards.length + '</span>' +
+      '</div>' +
+      '<div class="kanban-col-body">' + cardsHtml + '</div>' +
+      '</div>';
+  }).join('');
+
+  container.innerHTML = '<div class="kanban-view"><div class="kanban-board">' + colsHtml + '</div></div>';
+}
+
+// ===== TIMELINE VIEW =====
+function renderTimelineView(container, initiatives) {
+  var sorted = initiatives.slice().sort(function(a, b){
+    if (!a.deadline && !b.deadline)
+      return (HORIZON_ORDER[a.timeHorizon||'uger']||0) - (HORIZON_ORDER[b.timeHorizon||'uger']||0);
+    if (!a.deadline) return 1;
+    if (!b.deadline) return -1;
+    return new Date(a.deadline) - new Date(b.deadline);
   });
-  document.getElementById('init-roi').value = 5;
-  document.getElementById('init-roi-val').textContent = '5';
-  document.getElementById('init-hor').value = 1;
-  document.getElementById('init-hor-lbl').textContent = 'Uger';
-  openModal('initModal');
-  setTimeout(() => document.getElementById('init-titel').focus(), 80);
+
+  if (sorted.length === 0) {
+    container.innerHTML = '<div class="timeline-view"><div class="timeline-empty">Ingen initiativer matcher dine filtre.</div></div>';
+    return;
+  }
+
+  var itemsHtml = sorted.map(function(i, idx){
+    var side = idx % 2 === 0 ? 't-left' : 't-right';
+    var period = horizonLabel(i.timeHorizon) + (i.deadline ? ' &middot; Deadline: ' + escHtml(i.deadline) : '');
+    return '<div class="timeline-item ' + side + '">' +
+      '<div class="timeline-marker"></div>' +
+      '<div class="timeline-box">' +
+        '<div class="timeline-period">' + period + '</div>' +
+        '<h3>' + escHtml(i.title) + '</h3>' +
+        '<p>' + escHtml(i.shortDesc) + '</p>' +
+        '<div style="margin-top:0.5rem;display:flex;gap:5px;flex-wrap:wrap;">' +
+          '<span class="status-badge status-' + i.status + '">' + statusLabel(i.status) + '</span>' +
+          '<span class="impl-badge ' + implClass(i.impl) + '"><span class="badge-dot ' + implDotClass(i.impl) + '"></span>' + implLabel(i.impl) + '</span>' +
+          '<span class="impl-badge ' + implClass(i.effect) + '"><span class="badge-dot ' + implDotClass(i.effect) + '"></span>' + implLabel(i.effect) + ' effekt</span>' +
+        '</div>' +
+      '</div>' +
+      '</div>';
+  }).join('');
+
+  container.innerHTML =
+    '<div class="timeline-view">' +
+      '<div class="timeline-track">' +
+        '<div class="timeline-line"></div>' +
+        '<div class="timeline-items">' + itemsHtml + '</div>' +
+      '</div>' +
+    '</div>';
 }
-function saveInit() {
-  if (activeWsId === null) return;
-  const titel = document.getElementById('init-titel').value.trim();
-  if (!titel) { alert('Titel er påkrævet'); return; }
-  const de = document.querySelector('input[name="init-diff"]:checked');
-  const ee = document.querySelector('input[name="init-effect"]:checked');
-  initiatives.push({
-    id:           nextInitId++,
-    wsId:         activeWsId,
-    titel,
-    kort:         document.getElementById('init-kort').value.trim(),
-    detaljer:     document.getElementById('init-detaljer').value.trim(),
-    effekt:       document.getElementById('init-effekt').value.trim(),
-    status:       'ongoing',
-    difficulty:   de ? de.value : 'low',
-    effect:       ee ? ee.value : 'mid',
-    horizonIndex: parseInt(document.getElementById('init-hor').value)||0,
-    deadline:     document.getElementById('init-deadline').value,
-    roi:          parseFloat(document.getElementById('init-roi').value)||5,
-    cost:         parseFloat(document.getElementById('init-cost').value)||0,
-    createdAt:    new Date().toISOString(),
+
+// ===== FILTERING =====
+function setFilter(filterKey, btn, dataAttr) {
+  currentFilters[filterKey] = btn.dataset[dataAttr];
+  // Update active state within this group only
+  var group = btn.closest('.fp-group');
+  if (group) {
+    group.querySelectorAll('.fp-btn').forEach(function(b){ b.classList.toggle('active', b === btn); });
+  }
+  // Re-render view
+  var ws = getWorkspace(appState.workspaceId);
+  if (!ws) return;
+  renderDetailView(getSortedInitiatives(getFilteredInitiatives(ws.initiatives)), appState.workspaceId);
+}
+
+function getFilteredInitiatives(initiatives) {
+  var f  = initiatives;
+  var cf = currentFilters;
+  if (cf.audience !== 'all') f = f.filter(function(i){ return i.audiences.indexOf(cf.audience) >= 0 || i.audiences.indexOf('all') >= 0; });
+  if (cf.status   !== 'all') f = f.filter(function(i){ return i.status === cf.status; });
+  if (cf.horizon  !== 'all') f = f.filter(function(i){ return i.timeHorizon === cf.horizon; });
+  if (cf.impl     !== 'all') f = f.filter(function(i){ return i.impl === cf.impl; });
+  if (cf.effect   !== 'all') f = f.filter(function(i){ return i.effect === cf.effect; });
+  if (cf.deadline === 'has')  f = f.filter(function(i){ return i.deadline && i.deadline !== ''; });
+  if (cf.deadline === 'none') f = f.filter(function(i){ return !i.deadline || i.deadline === ''; });
+  return f;
+}
+
+function getSortedInitiatives(initiatives) {
+  var sorted = initiatives.slice();
+  switch (currentSort) {
+    case 'roi':      sorted.sort(function(a,b){ return (b.roi||0) - (a.roi||0); }); break;
+    case 'cost':     sorted.sort(function(a,b){ return (a.cost||0) - (b.cost||0); }); break;
+    case 'horizon':  sorted.sort(function(a,b){ return (HORIZON_ORDER[a.timeHorizon]||0) - (HORIZON_ORDER[b.timeHorizon]||0); }); break;
+    case 'deadline': sorted.sort(function(a,b){
+      if (!a.deadline && !b.deadline) return 0;
+      if (!a.deadline) return 1;
+      if (!b.deadline) return -1;
+      return new Date(a.deadline) - new Date(b.deadline);
+    }); break;
+    default: sorted.sort(function(a,b){ return a.id - b.id; });
+  }
+  return sorted;
+}
+
+function onSortChange() {
+  var sel = document.getElementById('sort-select');
+  if (sel) currentSort = sel.value;
+  var ws = getWorkspace(appState.workspaceId);
+  if (!ws) return;
+  renderDetailView(getSortedInitiatives(getFilteredInitiatives(ws.initiatives)), appState.workspaceId);
+}
+
+function resetFilters() {
+  currentFilters = { audience: 'all', status: 'all', horizon: 'all', impl: 'all', effect: 'all', deadline: 'all' };
+  currentSort    = 'default';
+  renderMain();
+}
+
+// ===== WORKSPACE CRUD =====
+function openNewWorkspaceModal() {
+  document.getElementById('wsIcon').value = '📋';
+  document.getElementById('wsName').value = '';
+  document.getElementById('wsDesc').value = '';
+  document.getElementById('newWorkspaceModal').style.display = 'block';
+  setTimeout(function(){ document.getElementById('wsName').focus(); }, 50);
+}
+
+function closeNewWorkspaceModal() {
+  document.getElementById('newWorkspaceModal').style.display = 'none';
+}
+
+function saveNewWorkspace() {
+  var name = document.getElementById('wsName').value.trim();
+  if (!name) { alert('Angiv et navn for arbejdsområdet.'); return; }
+  workspaces.push({
+    id:          nextWorkspaceId++,
+    icon:        document.getElementById('wsIcon').value.trim() || '📋',
+    name:        name,
+    description: document.getElementById('wsDesc').value.trim(),
+    initiatives: [],
   });
-  closeModal('initModal');
-  renderAll();
-}
-function openInitDeleteConfirm(id) {
-  deletingInitId = id;
-  const c = initiatives.find(x => x.id===id);
-  document.getElementById('init-delete-name').textContent = c ? c.titel : '';
-  openModal('initDeleteModal');
-}
-function confirmDeleteInit() {
-  initiatives = initiatives.filter(i => i.id !== deletingInitId);
-  closeModal('initDeleteModal');
-  renderAll();
+  closeNewWorkspaceModal();
+  renderSidebar();
+  renderMain();
 }
 
-/* ── ESCAPE HTML ─────────────────────────────────────────────────────────────── */
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// ===== INITIATIVE CRUD =====
+function openNewInitiativeModal(wsId) {
+  newInitiativeWsId = wsId;
+  document.getElementById('initTitle').value       = '';
+  document.getElementById('initStatus').value      = 'ide';
+  document.getElementById('initShortDesc').value   = '';
+  document.getElementById('initDetails').value     = '';
+  document.getElementById('initImpact').value      = '';
+  document.getElementById('initROI').value         = '7';
+  document.getElementById('initCost').value        = '';
+  document.getElementById('initDeadline').value    = '';
+  document.getElementById('initTimeHorizon').value = '1';
+  document.getElementById('initTimeHorizonLabel').textContent = 'Uger';
+  document.getElementById('initImpl').value   = 'lav';
+  document.getElementById('initEffect').value = 'lav';
+  document.querySelectorAll('#initImplCircles .circ-btn').forEach(function(b,i){ b.classList.toggle('selected', i===0); });
+  document.querySelectorAll('#initEffectCircles .circ-btn').forEach(function(b,i){ b.classList.toggle('selected', i===0); });
+  document.querySelectorAll('#newInitiativeModal .form-checkbox input').forEach(function(cb){ cb.checked = false; });
+  document.getElementById('newInitiativeModal').style.display = 'block';
+  setTimeout(function(){ document.getElementById('initTitle').focus(); }, 50);
 }
 
-/* ── WIRE FILTER CHIPS ───────────────────────────────────────────────────────── */
-wireFilterGroup('f-status',  v => fStatus  = v);
-wireFilterGroup('f-diff',    v => fDiff    = v);
-wireFilterGroup('f-effect',  v => fEffect  = v);
-wireFilterGroup('f-horizon', v => fHorizon = v);
+function closeNewInitiativeModal() {
+  document.getElementById('newInitiativeModal').style.display = 'none';
+  newInitiativeWsId = null;
+}
 
-/* ── INIT ────────────────────────────────────────────────────────────────────── */
-renderAll();
+function saveNewInitiative() {
+  var title = document.getElementById('initTitle').value.trim();
+  if (!title) { alert('Tilføj en titel!'); return; }
+  var ws = getWorkspace(newInitiativeWsId);
+  if (!ws) return;
+
+  var audiences = [];
+  if (document.getElementById('initAudSponsor').checked)   audiences.push('sponsor');
+  if (document.getElementById('initAudFan').checked)       audiences.push('fan');
+  if (document.getElementById('initAudFrivillig').checked) audiences.push('frivillig');
+
+  var horizonIdx = parseInt(document.getElementById('initTimeHorizon').value, 10);
+
+  ws.initiatives.push({
+    id:          nextInitiativeId++,
+    title:       title,
+    status:      document.getElementById('initStatus').value,
+    shortDesc:   document.getElementById('initShortDesc').value.trim(),
+    details:     document.getElementById('initDetails').value.trim(),
+    impact:      document.getElementById('initImpact').value.trim(),
+    roi:         Math.min(10, Math.max(0, parseInt(document.getElementById('initROI').value, 10) || 0)),
+    cost:        parseInt(document.getElementById('initCost').value, 10) || 0,
+    impl:        document.getElementById('initImpl').value,
+    effect:      document.getElementById('initEffect').value,
+    deadline:    document.getElementById('initDeadline').value,
+    timeHorizon: HORIZON_VALUES[horizonIdx],
+    audiences:   audiences.length > 0 ? audiences : ['all'],
+    createdAt:   new Date().toISOString(),
+  });
+
+  closeNewInitiativeModal();
+  renderSidebar();
+  renderMain();
+}
+
+function cycleInitiativeStatus(wsId, initId) {
+  var ws = getWorkspace(wsId);
+  if (!ws) return;
+  var init = ws.initiatives.filter(function(i){ return i.id === initId; })[0];
+  if (!init) return;
+  var order = ['ide', 'planlagt', 'igang', 'afsluttet'];
+  var idx   = order.indexOf(init.status);
+  init.status = order[(idx + 1) % order.length];
+  renderSidebar();
+  renderMain();
+}
+
+function deleteInitiative(wsId, initId) {
+  if (!confirm('Er du sikker på, at du vil slette dette initiativ?')) return;
+  var ws = getWorkspace(wsId);
+  if (!ws) return;
+  ws.initiatives = ws.initiatives.filter(function(i){ return i.id !== initId; });
+  renderSidebar();
+  renderMain();
+}
+
+// ===== FORM CONTROLS SETUP =====
+function setupFormControls() {
+  [['#initImplCircles', 'initImpl'], ['#initEffectCircles', 'initEffect']].forEach(function(pair){
+    var sel      = pair[0];
+    var hiddenId = pair[1];
+    document.querySelectorAll(sel + ' .circ-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        document.querySelectorAll(sel + ' .circ-btn').forEach(function(b){ b.classList.remove('selected'); });
+        this.classList.add('selected');
+        document.getElementById(hiddenId).value = this.dataset.val;
+      });
+    });
+  });
+
+  var slider = document.getElementById('initTimeHorizon');
+  var label  = document.getElementById('initTimeHorizonLabel');
+  if (slider) {
+    slider.addEventListener('input', function(){ label.textContent = HORIZON_LABELS[this.value]; });
+  }
+}
+
+// ===== OUTSIDE CLICK CLOSES MODALS =====
+window.onclick = function(e) {
+  ['newWorkspaceModal', 'newInitiativeModal'].forEach(function(id){
+    var m = document.getElementById(id);
+    if (e.target === m) m.style.display = 'none';
+  });
+};
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', function() {
+  setupFormControls();
+  renderSidebar();
+  renderMain();
+});
 </script>
 </body>
 </html>
