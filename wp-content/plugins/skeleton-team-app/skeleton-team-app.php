@@ -108,12 +108,12 @@ function skeleton_seed_demo_data() {
     $workspaces_table  = $wpdb->prefix . 'skeleton_workspaces';
     $initiatives_table = $wpdb->prefix . 'skeleton_initiatives';
 
-    $ws_id = $wpdb->insert(
+    $result = $wpdb->insert(
         $workspaces_table,
         ['name' => 'Demo Arbejdsområde', 'icon' => '🚀', 'description' => 'Eksempel-arbejdsområde (demo)'],
         ['%s', '%s', '%s']
     );
-    if (!$ws_id) {
+    if (!$result) {
         return;
     }
     $ws_id = $wpdb->insert_id;
@@ -188,7 +188,11 @@ function skeleton_render_app() {
             <div class="gh-right">
               <?php if (is_user_logged_in()):
                 $user = wp_get_current_user();
-                $initials = strtoupper(substr($user->display_name, 0, 1) . substr(strrchr($user->display_name, ' '), 1, 1));
+                $last = strrchr($user->display_name, ' ');
+                $initials = strtoupper(
+                    substr($user->display_name, 0, 1) .
+                    ($last !== false ? substr($last, 1, 1) : substr($user->display_name, 1, 1))
+                );
               ?>
               <div class="gh-user">
                 <div class="gh-avatar"><?php echo esc_html($initials ?: '?'); ?></div>

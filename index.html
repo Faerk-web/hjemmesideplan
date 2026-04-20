@@ -1241,11 +1241,13 @@ function renderDashboard(container) {
       '<div class="progress-ring-sub">Samlet projektfremgang<br>baseret på afsluttede initiativer</div>' +
     '</div>';
 
-  // Recent activity – based on real initiative data (sorted by createdAt)
+  // Recent activity – based on real initiative data (sorted by updatedAt/createdAt)
   var recentInitiatives = all
     .slice()
     .sort(function(a,b){
-      return new Date(b.createdAt||0) - new Date(a.createdAt||0);
+      var ta = new Date(a.updatedAt||a.createdAt||0).getTime();
+      var tb = new Date(b.updatedAt||b.createdAt||0).getTime();
+      return tb - ta;
     })
     .slice(0,5);
   var activityHtml;
