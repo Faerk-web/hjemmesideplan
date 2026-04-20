@@ -142,6 +142,16 @@
   }
   .sidebar-add-btn:hover { color: var(--accent); }
 
+  .nav-ws-label { flex: 1; }
+  .nav-ws-add-btn {
+    font-size: 16px; font-weight: 400;
+    color: var(--text-muted); margin-right: 2px;
+  }
+  .nav-ws-add-btn:hover { color: var(--accent); }
+
+  /* Workspace grid on dashboard */
+  .dash-ws-grid { max-width: 920px; }
+
   /* Sidebar download card */
   .sidebar-download-card {
     margin: 1rem;
@@ -834,8 +844,8 @@
       </div>
       <div class="nav-item" id="nav-workspaces" onclick="navigate('workspaces')">
         <span class="nav-icon">&#x1F4C1;</span>
-        <span style="flex:1;">Arbejdsområder</span>
-        <span style="font-size:16px;font-weight:400;color:var(--text-muted);margin-right:2px;" onclick="event.stopPropagation();openNewWorkspaceModal();" title="Nyt arbejdsområde">+</span>
+        <span class="nav-ws-label">Arbejdsområder</span>
+        <span class="nav-ws-add-btn" onclick="event.stopPropagation();openNewWorkspaceModal();" title="Nyt arbejdsområde">+</span>
       </div>
 
       <!-- Dynamic workspace list injected by JS -->
@@ -1041,7 +1051,7 @@ var timerInterval = null;
 var timerSeconds  = 0;
 var timerRunning  = false;
 
-function timerPad(n) { return n < 10 ? '0' + n : '' + n; }
+function timerPad(n) { return n < 10 ? '0' + String(n) : String(n); }
 function timerFormat(s) {
   var h = Math.floor(s / 3600);
   var m = Math.floor((s % 3600) / 60);
@@ -1171,7 +1181,8 @@ function renderDashboard(container) {
   var dkMonths = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
   function fmtDkDate(iso) {
     if (!iso) return '';
-    var d = new Date(iso);
+    var parts = iso.split('-');
+    var d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
     return d.getDate() + '. ' + dkMonths[d.getMonth()] + ' ' + d.getFullYear();
   }
 
@@ -1196,7 +1207,7 @@ function renderDashboard(container) {
     wsHtml = '<div class="empty-state">Ingen arbejdsområder endnu.<br>' +
       '<button class="btn-primary" style="margin-top:1rem;" onclick="openNewWorkspaceModal()">+ Nyt arbejdsområde</button></div>';
   } else {
-    wsHtml = '<div class="ws-grid" style="max-width:920px;">' +
+    wsHtml = '<div class="ws-grid dash-ws-grid">' +
       workspaces.map(function(ws){
         var active = ws.initiatives.filter(function(i){ return i.status !== 'afsluttet'; }).length;
         return '<div class="ws-card" onclick="navigate(\'workspace\',' + ws.id + ')">' +
